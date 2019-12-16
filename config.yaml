@@ -1,0 +1,6 @@
+servicenamelist: []
+serviceportlist: []
+shellpath: /app/sysmgmt/res/
+mdns:
+  name: 主机
+  port: 42424

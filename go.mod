@@ -2,4 +2,11 @@ module sysmgmt-next
 
 go 1.13
 
-require gopkg.in/yaml.v2 v2.2.7
+require (
+	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
+	github.com/gin-gonic/gin v1.5.0
+	github.com/grandcat/zeroconf v0.0.0-20190424104450-85eadb44205c
+	github.com/miekg/dns v1.1.25 // indirect
+	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553 // indirect
+	gopkg.in/yaml.v2 v2.2.7
+)

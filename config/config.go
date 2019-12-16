@@ -15,6 +15,7 @@ const file = "config.yaml"
 type Config struct {
 	ServiceNamelist []string
 	ServicePortlist []string
+	Port            int
 	ShellPath       string
 	MDNS            MDNS
 }
@@ -29,6 +30,7 @@ type MDNS struct {
 var Conf = Config{
 	ServiceNamelist: make([]string, 0),
 	ServicePortlist: make([]string, 0),
+	Port:            52035,
 	ShellPath:       "/app/sysmgmt/res/",
 	MDNS: MDNS{
 		Name: "主机",
