@@ -16,11 +16,19 @@ func Service(cnf config.Config) {
 	v1 := router.Group("/api/v1")
 	{
 		v1.GET("/ping", handlers.Ping)
+		// todo:
+		v1.GET("/getMacAddr", handlers.GetMacAddr)
+		v1.GET("/system/net", handlers.GetSystemNet)
+
 		v1.GET("/version", handlers.GetVersionList)
-		// todo: 测试修改 IP
+		v1.GET("/get/time/info", handlers.GetTimeInfo)
+
 		v1.PUT("/update/IP", handlers.PutIP)
-		// todo: 测试重启
 		v1.PUT("/system/reboot", handlers.Reboot)
+		v1.PUT("/modified/time", handlers.PutTime)
+
+		v1.POST("/uploadFile", handlers.FileUpload)
+
 	}
 	router.Run(fmt.Sprintf(":%d", cnf.Port))
 }

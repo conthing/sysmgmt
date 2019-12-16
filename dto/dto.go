@@ -20,3 +20,20 @@ type VersionInfo struct {
 	Name    string `json:"name"`
 	Version string `json:"version"`
 }
+
+// MacInfo Mac 信息
+type MacInfo struct {
+	Mac string `json:"mac"`
+}
+
+//TimeInfo 时间信息
+type TimeInfo struct {
+	Time      int64  `json:"time"`
+	Ntpstatus bool   `json:"ntpstatus"`
+	NtpURL    string `json:"ntpurl"`
+}
+
+// SystemNetInfo 系统网络信息
+type SystemNetInfo struct {
+	DHCPFlag bool `json:"flag"`
+}
