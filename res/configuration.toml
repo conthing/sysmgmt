@@ -1,0 +1,20 @@
+[OTAUrl]
+cloud = "https://ota-insona.oss-cn-hangzhou.aliyuncs.com"
+usb = "/dev/sda1"
+PS = "IN-C01-MFP-S6"
+
+[MicroServicePort]
+serviceNamelist = ["zgb-insona","support-znet","ha-scene","hvac-iracc","core-data","core-metadata","core-command","export-client","export-distro","ha-project","export-homebridge"]
+servicePortlist = ["52033","52031","52034","52036","48080","48081","48082","48071","48070","52030","8111"]
+
+[AliyunOSS]
+endPoint = "http://oss-cn-hangzhou.aliyuncs.com"
+assessKeyId = "LTAI5ZuLqK2gxc6z"
+assessKeySecret = "jTDJaBos284ztA52IN1zj7c627p0IY"
+
+[mDNS]
+name = "主机"
+port = 42424
+
+[Shell]
+path = "/app/sysmgmt/res/"
