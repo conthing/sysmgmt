@@ -19,12 +19,12 @@ func PutTime(c *gin.Context) {
 		return
 	}
 
-	if info.NtpURL == "" {
-		info.NtpURL = NTPServerURL
+	if info.URL == "" {
+		info.URL = NTPServerURL
 	}
 	shellPath := config.Conf.ShellPath + "modifiedTime.sh"
 	time := time.Unix(info.Date, 0)
-	command := exec.Command(shellPath, info.TimeType, time.Format("2006-01-02 15:04:05"), info.NtpURL)
+	command := exec.Command(shellPath, info.Type, time.Format("2006-01-02 15:04:05"), info.URL)
 	out, err := command.Output()
-	log.Printf("timedatectl set-ntp true output:%s,err:%v", string(out), err)
+	log.Printf("timedatectl output:%s,err:%v", string(out), err)
 }

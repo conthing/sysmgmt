@@ -17,7 +17,7 @@ func Service(cnf config.Config) {
 	{
 		v1.GET("/ping", handlers.Ping)                      // ✅
 		v1.GET("/mac", handlers.GetMac)                     // ✅
-		v1.PUT("/net", handlers.PutNet)                     // ❌
+		v1.PUT("/net", handlers.PutNet)                     // ✅
 		v1.GET("/net/info", handlers.GetNetInfo)            // ✅
 		v1.GET("/version-list", handlers.GetVersionList)    // ✅
 		v1.PUT("/time", handlers.PutTime)                   // ❌
