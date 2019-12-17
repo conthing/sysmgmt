@@ -1,5 +1,5 @@
-servicenamelist: []
-serviceportlist: []
+servicenamelist: [lpr, auth]
+serviceportlist: [1200, 2300]
 port: 52035
 shellpath: /app/sysmgmt/res/
 mdns:

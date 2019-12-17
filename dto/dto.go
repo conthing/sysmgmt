@@ -37,3 +37,9 @@ type TimeInfo struct {
 type SystemNetInfo struct {
 	DHCPFlag bool `json:"flag"`
 }
+
+// FileInfo 文件信息
+type FileInfo struct {
+	Downloading bool   `json:"downloading"`
+	Message     string `json:"message"`
+}
