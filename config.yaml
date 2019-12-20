@@ -6,6 +6,15 @@ mdns:
   name: 主机
   port: 42424
 microservicelist:
-- name: lpr
+- name: lprstatus
   url: http://localhost:52032/api/v1/status
   led: /dev/led-pwm3
+- name: lprping
+  url: http://localhost:52032/api/v1/ping
+  led: /dev/led-pwm1
+- name: exportmqttstatus
+  url: http://localhost:52018/api/v1/status
+  led: /dev/led-pwm2
+- name: exportmqttping
+  url: http://localhost:52018/api/v1/ping
+  led: /dev/led-pwm1

@@ -12,8 +12,9 @@ func main() {
 
 	// todo: 测试 WatchDog
 	// services.WatchDog()
-
+	go services.CheckServiceHealth([]config.MicroService{})
 	router.Service(config.Conf)
 
 	defer services.StopMDNS()
+
 }
