@@ -48,6 +48,7 @@ var Conf = Config{
 	MicroServiceList: []MicroService{
 		{
 			Name: "lpr",
+			Type: "ping",
 			URL:  "http://localhost:52032/api/v1/status",
 			LED:  "/dev/led-pwm3",
 		},
