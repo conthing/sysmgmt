@@ -1,7 +1,11 @@
-servicenamelist: [lpr, auth]
-serviceportlist: [1200, 2300]
+servicenamelist: []
+serviceportlist: []
 port: 52035
 shellpath: /app/sysmgmt/res/
 mdns:
   name: 主机
   port: 42424
+microservicelist:
+- name: lpr
+  url: http://localhost:52032/api/v1/status
+  led: /dev/led-pwm3

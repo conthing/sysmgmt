@@ -21,9 +21,10 @@ type Config struct {
 	MicroServiceList []MicroService
 }
 
+// MicroService 微服务配置
 type MicroService struct {
 	Name string
-	Url  string
+	URL  string
 	LED  string
 }
 
@@ -42,6 +43,13 @@ var Conf = Config{
 	MDNS: MDNS{
 		Name: "主机",
 		Port: 42424,
+	},
+	MicroServiceList: []MicroService{
+		MicroService{
+			Name: "lpr",
+			URL:  "http://localhost:52032/api/v1/status",
+			LED:  "/dev/led-pwm3",
+		},
 	},
 }
 
