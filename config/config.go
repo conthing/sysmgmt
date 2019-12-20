@@ -13,11 +13,18 @@ const file = "config.yaml"
 
 // Config 配置文件结构
 type Config struct {
-	ServiceNamelist []string
-	ServicePortlist []string
-	Port            int
-	ShellPath       string
-	MDNS            MDNS
+	ServiceNamelist  []string
+	ServicePortlist  []string
+	Port             int
+	ShellPath        string
+	MDNS             MDNS
+	MicroServiceList []MicroService
+}
+
+type MicroService struct {
+	Name string
+	Url  string
+	LED  string
 }
 
 // MDNS 发现服务
