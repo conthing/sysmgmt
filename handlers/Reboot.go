@@ -11,7 +11,7 @@ import (
 func Reboot(c *gin.Context) {
 	go func() {
 		time.Sleep(2 * time.Second)
-		exec.Command("reboot", "-f") //初始化Cmd
+		exec.Command("reboot", "-f").Output() //初始化Cmd
 	}()
 	c.String(200, "OK")
 }
