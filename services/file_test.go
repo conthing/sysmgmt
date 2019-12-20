@@ -6,7 +6,7 @@ import (
 )
 
 func TestReadYAML(t *testing.T) {
-	err := ReadYAML("/Users/naive/sysmgmt-next/update.yaml")
+	err := ReadYAML()
 	log.Println(MyItemCollection)
 	if err != nil {
 
