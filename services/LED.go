@@ -1,26 +1,38 @@
 package services
 
 import (
-	"github.com/conthing/utils/common"
-	"github.com/json-iterator/go"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os/exec"
 	"sysmgmt-next/config"
 	"time"
+
+	"github.com/conthing/utils/common"
+	jsoniter "github.com/json-iterator/go"
 )
 
-func CheckServiceHealth(lightlist []config.MicroService) {
+// ScheduledLED 指示灯
+func ScheduledLED(list []config.MicroService) {
 	for {
-		for _, s := range lightlist {
-			LED(s)
+		for _, s := range list {
+			controlWWWAndLink(s)
 		}
+		controlHealthStatusLED()
+
 		time.Sleep(time.Second * 30)
 	}
 }
 
-func LED(s config.MicroService) {
+func controlHealthStatusLED() {
+	if IsHealth {
+		exec.Command("/usr/test/led-pwm-start-percentage", "/dev/led-pwm1", "2", "1").Output()
+		common.Log.Info("健康检查", "开灯")
+	}
+}
+
+// controlWWWAndLink 控制指示灯
+func controlWWWAndLink(s config.MicroService) {
 	common.Log.Info(s.URL)
 	resp, err := http.Get(s.URL)
 	// http 连接异常
@@ -38,16 +50,8 @@ func LED(s config.MicroService) {
 		common.Log.Error("解析 body 出错", err, "关灯 -> ", string(str))
 		return
 	}
-	// ping
+	// status
 	switch s.Type {
-	case "ping":
-		if string(data) == "pong" {
-			exec.Command("/usr/test/led-pwm-start-percentage", s.LED, "2", "1").Output()
-			common.Log.Info("Get URL pong", "开灯")
-		} else {
-			exec.Command("/usr/test/led-hrtimer-close", s.LED).Output()
-			common.Log.Error("Get not pong", "关灯")
-		}
 	case "status":
 		if jsoniter.Get(data, "status").ToString() == "connected" {
 			exec.Command("/usr/test/led-pwm-start-percentage", s.LED, "2", "1").Output()

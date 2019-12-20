@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 	"sysmgmt-next/config"
 	"time"
@@ -15,11 +16,12 @@ var IsHealth bool
 // 如果有一个微服务检查失败，直接返回false
 func HealthCheck() {
 	portList := config.Conf.ServicePortlist
-
-	for port := range portList {
-		resp, err := http.Get("http://localhost:" + string(port) + "/api/v1/ping")
+	common.Log.Info(portList)
+	for _, port := range portList {
+		resp, err := http.Get(fmt.Sprintf("http://localhost:%s/api/v1/ping", port))
 
 		if err != nil || resp.StatusCode != 200 {
+			common.Log.Error("微服务不健康: ", fmt.Sprintf("http://localhost:%s/api/v1/ping", port))
 			IsHealth = false
 			return
 		}
