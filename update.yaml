@@ -1,0 +1,19 @@
+add-item-list:
+  -
+    src: /tmp/update/sysmgmt/
+    dst: /app/sysmgmt/
+  -
+    src: /tmp/update/nginx/
+    dst: /app/nginx/
+put-item-list:
+  -
+    src: /tmp/update/lpr/
+    dst: /app/zap/lpr/
+  -
+    src: /tmp/update/admin-auth/
+    dst: /app/zap/admin-auth/
+del-item-list:
+  -
+    dst: /app/ver.ini
+  -
+    dst: /app/ver.txt
