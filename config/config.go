@@ -26,6 +26,7 @@ type MicroService struct {
 	Name string
 	URL  string
 	LED  string
+	Type string
 }
 
 // MDNS 发现服务
@@ -45,7 +46,7 @@ var Conf = Config{
 		Port: 42424,
 	},
 	MicroServiceList: []MicroService{
-		MicroService{
+		{
 			Name: "lpr",
 			URL:  "http://localhost:52032/api/v1/status",
 			LED:  "/dev/led-pwm3",

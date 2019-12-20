@@ -1,6 +1,9 @@
 package services
 
 import (
+	"github.com/conthing/utils/common"
+	"github.com/json-iterator/go"
+	"io/ioutil"
 	"net/http"
 	"os/exec"
 	"sysmgmt-next/config"
@@ -8,23 +11,42 @@ import (
 )
 
 func CheckServiceHealth(lightlist []config.MicroService) {
-	time.Sleep(time.Second * 30)
-	for _, s := range lightlist {
-		LED(s.URL, s.LED)
+	for {
+		for _, s := range lightlist {
+			LED(s)
+		}
+		time.Sleep(time.Second * 30)
 	}
 }
 
-func LED(url string, name string) {
-	resp, err := http.Get(url)
+func LED(s config.MicroService) {
+	common.Log.Info(s.URL)
+	resp, err := http.Get(s.URL)
+	// http 连接异常
 	if err != nil {
-		command := exec.Command("/usr/test/led-hrtimer-close", name)
-		command.Output()
+		str, _ := exec.Command("/usr/test/led-hrtimer-close", s.Name).Output()
+		common.Log.Error("Get url 出错", err, "关灯 -> ", string(str))
 	}
-	if resp.StatusCode == 200 {
-		command := exec.Command("/usr/test/led-pwm-start-percentage", name, "2", "1")
-		command.Output()
+	// body 分类
+	data, err := ioutil.ReadAll(resp.Body)
+	common.Log.Info(string(data))
+	// body 异常
+	if err != nil {
+		str, _ := exec.Command("/usr/test/led-hrtimer-close", s.Name).Output()
+		common.Log.Error("解析 body 出错", err, "关灯 -> ", string(str))
+	}
+	// ping
+	if s.Type == "ping" && string(data) == "pong" {
+		str, _ := exec.Command("/usr/test/led-pwm-start-percentage", s.Name, "2", "1").Output()
+		common.Log.Info("Get url pong", "开灯 -> ", string(str))
+	}
+	// status
+	if s.Type == "status" && jsoniter.Get(data, "status").ToString() == "connected" {
+		str, _ := exec.Command("/usr/test/led-pwm-start-percentage", s.Name, "2", "1").Output()
+		common.Log.Info("Get url status connected", "开灯 -> ", string(str))
+
 	} else {
-		command := exec.Command("/usr/test/led-hrtimer-close", name)
-		command.Output()
+		str, _ := exec.Command("/usr/test/led-hrtimer-close", s.Name).Output()
+		common.Log.Error("Get url", err, "关灯 -> ", string(str))
 	}
 }
