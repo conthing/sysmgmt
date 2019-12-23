@@ -43,3 +43,9 @@ type FileInfo struct {
 	Downloading bool   `json:"downloading"`
 	Message     string `json:"message"`
 }
+
+// Changelog 整体版本说明
+type Changelog struct {
+	Version         string   `json:"version"`
+	DescriptionList []string `json:"description_list"`
+}

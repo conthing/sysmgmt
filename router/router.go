@@ -24,6 +24,7 @@ func Service(cnf config.Config) {
 		v1.GET("/time/info", handlers.GetTimeInfo)          // ✅
 		v1.PUT("/reboot", handlers.Reboot)                  // ✅
 		v1.POST("/update/file-upload", handlers.FileUpload) // ✅
+		v1.GET("/changelog", handlers.GetChangeLog)
 
 	}
 	router.Run(fmt.Sprintf(":%d", cnf.Port))
