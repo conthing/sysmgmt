@@ -16,7 +16,6 @@ var IsHealth bool
 // 如果有一个微服务检查失败，直接返回false
 func HealthCheck() {
 	portList := config.Conf.ServicePortlist
-	common.Log.Info(portList)
 	for _, port := range portList {
 		resp, err := http.Get(fmt.Sprintf("http://localhost:%s/api/v1/ping", port))
 
@@ -35,7 +34,6 @@ func HealthCheck() {
 func ScheduledHealthCheck() {
 	for {
 		HealthCheck()
-		common.Log.Info("健康检查结果: ", IsHealth)
 		time.Sleep(30 * time.Second)
 	}
 }
