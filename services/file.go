@@ -33,28 +33,35 @@ type ItemCollection struct {
 	DelItemList []DelItem `yaml:"del-item-list"`
 }
 
-// MyItemCollection 全局变量, 默认都为空数组
-var MyItemCollection = ItemCollection{}
-
 // UpdateService 升级服务
 func UpdateService() error {
+	var c = ItemCollection{}
+
 	err := UnZip()
 	if err != nil {
+		log.Println("Unzip", err)
+
 		return err
 	}
 
-	err = ReadYAML()
+	err = ReadYAML(&c)
 	if err != nil {
+		log.Println("Read", err)
+
 		return err
 	}
 
-	err = Install()
+	err = Install(&c)
 	if err != nil {
+		log.Println("Install", err)
+
 		return err
 	}
 
 	err = Clean()
 	if err != nil {
+		log.Println("Clean 2", err)
+
 		return err
 	}
 
@@ -63,38 +70,47 @@ func UpdateService() error {
 
 // Clean 清理
 func Clean() error {
-	err := os.RemoveAll("/tmp/file/")
-	if err != nil {
-		return err
+	if exists("/tmp/file") {
+		err := os.RemoveAll("/tmp/file/")
+		if err != nil {
+			return err
+		}
 	}
-	err = os.RemoveAll("/tmp/__MACOSX")
-	if err != nil {
-		return err
+
+	if exists("/tmp/__MACOSX") {
+		err := os.RemoveAll("/tmp/__MACOSX")
+		if err != nil {
+			return err
+		}
 	}
-	err = os.RemoveAll("/tmp/file.zip")
-	if err != nil {
-		return err
+
+	if exists("/tmp/file.zip") {
+		err := os.RemoveAll("/tmp/file.zip")
+		if err != nil {
+			return err
+		}
 	}
+
 	return nil
 }
 
 // Install 安装
-func Install() error {
-	for _, item := range MyItemCollection.AddItemList {
+func Install(c *ItemCollection) error {
+	for _, item := range c.AddItemList {
 		err := add(item)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, item := range MyItemCollection.PutItemList {
+	for _, item := range c.PutItemList {
 		err := put(item)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, item := range MyItemCollection.DelItemList {
+	for _, item := range c.DelItemList {
 		err := del(item)
 		if err != nil {
 			return err
@@ -117,17 +133,17 @@ func UnZip() error {
 // ReadYAML 读取YAML
 // update.yaml 为更新清单
 // 更新清单解压后放在"/tmp/file/update.yaml"
-func ReadYAML() error {
+func ReadYAML(c *ItemCollection) error {
 	yamlFile, err := ioutil.ReadFile("/tmp/file/update.yaml")
 	if err != nil {
 		return err
 	}
 
-	err = yaml.Unmarshal(yamlFile, &MyItemCollection)
+	err = yaml.Unmarshal(yamlFile, c)
+	log.Println(c)
 	if err != nil {
 		return err
 	}
-	log.Println(MyItemCollection)
 	return nil
 
 }
@@ -159,4 +175,16 @@ func del(item DelItem) error {
 		return err
 	}
 	return nil
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path) //os.Stat获取文件信息
+	if err != nil {
+		if os.IsExist(err) {
+			log.Println(err)
+			return true
+		}
+		return false
+	}
+	return true
 }

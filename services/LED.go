@@ -27,13 +27,11 @@ func ScheduledLED(list []config.MicroService) {
 func controlHealthStatusLED() {
 	if IsHealth {
 		exec.Command("/usr/test/led-pwm-start-percentage", "/dev/led-pwm1", "2", "1").Output()
-		common.Log.Info("健康检查", "开灯")
 	}
 }
 
 // controlWWWAndLink 控制指示灯
 func controlWWWAndLink(s config.MicroService) {
-	common.Log.Info(s.URL)
 	resp, err := http.Get(s.URL)
 	// http 连接异常
 	if err != nil {
@@ -43,7 +41,7 @@ func controlWWWAndLink(s config.MicroService) {
 	}
 	// body 分类
 	data, err := ioutil.ReadAll(resp.Body)
-	common.Log.Info(string(data))
+
 	// body 异常
 	if err != nil {
 		str, _ := exec.Command("/usr/test/led-hrtimer-close", s.LED).Output()
@@ -55,7 +53,6 @@ func controlWWWAndLink(s config.MicroService) {
 	case "status":
 		if jsoniter.Get(data, "status").ToString() == "connected" {
 			exec.Command("/usr/test/led-pwm-start-percentage", s.LED, "2", "1").Output()
-			common.Log.Info("Get URL connected", "开灯")
 		} else {
 			exec.Command("/usr/test/led-hrtimer-close", s.LED).Output()
 			common.Log.Error("Get not connected", "关灯")
