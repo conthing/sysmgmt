@@ -33,17 +33,14 @@ func HealthCheck() {
 
 // CheckLpr 检查 lpr
 func CheckLpr() {
-	out, err := exec.Command("/bin/sh", "-c", "pgrep -l lpr").Output()
+	out, err := exec.Command("/bin/sh", "-c", "/app/scripts/check_lpr.sh").Output()
 	if err != nil {
 		common.Log.Error("CheckLpr 执行 shell 失败: ", err)
 	}
 	str := string(out)
 	common.Log.Info(str)
 	if str == "" {
-		_, err := exec.Command("cd /app/zap/lpr && LD_LIBRARY_PATH=. exec -a conthing-lpr ./lpr -d /app/log/lpr >/app/log/conthing-lpr.log 2>&1 &").Output()
-		if err != nil {
-			common.Log.Error("重启 lpr 失败", err)
-		}
+		exec.Command("/bin/sh", "-c", "/app/scripts/restart.sh").Run()
 	}
 }
 
