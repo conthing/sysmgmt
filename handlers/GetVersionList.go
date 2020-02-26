@@ -3,6 +3,7 @@ package handlers
 import (
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"sysmgmt-next/config"
 	"sysmgmt-next/dto"
 
@@ -23,7 +24,10 @@ func GetVersionList(c *gin.Context) {
 		defer resp.Body.Close()
 		body, _ := ioutil.ReadAll(resp.Body)
 		version.Name = servicename
-		version.Version = string(body)
+		str := string(body)
+		strArray := strings.Split(str, " ")
+		version.Version = strArray[0]
+		version.CreatedTime = strArray[1] + " " + strArray[2]
 		versionList = append(versionList, version)
 	}
 	c.JSON(200, versionList)

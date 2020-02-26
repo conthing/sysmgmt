@@ -17,8 +17,9 @@ type NTPInfo struct {
 
 // VersionInfo 微服务版本信息
 type VersionInfo struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
+	Name        string `json:"name"`
+	Version     string `json:"version"`
+	CreatedTime string
 }
 
 // MacInfo Mac 信息
