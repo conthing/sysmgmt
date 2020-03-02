@@ -28,7 +28,11 @@ func runShell(shellPath string, s dto.NetInfo) {
 	if netname == "" {
 		log.Fatal("GetMajorInterface failed")
 	} else {
-		command := exec.Command(shellPath, common.GetMajorInterface(), s.Nettype, s.Address, s.Netmask, s.Gateway) //初始化Cmd
+		nettype := "static"
+		if s.DHCP {
+			nettype = "dhcp"
+		}
+		command := exec.Command(shellPath, common.GetMajorInterface(), nettype, s.Address, s.Netmask, s.Gateway) //初始化Cmd
 		out, _ := command.Output()
 		log.Printf("modified ip output:%s", string(out))
 	}

@@ -2,7 +2,7 @@ package dto
 
 // NetInfo 设置网络的结构体
 type NetInfo struct {
-	Nettype string `json:"nettype" `
+	DHCP    bool   `json:"dhcp" `
 	Address string `json:"address" `
 	Netmask string `json:"netmask" `
 	Gateway string `json:"gateway" `
