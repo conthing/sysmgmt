@@ -15,11 +15,18 @@ type NTPInfo struct {
 	URL  string `json:"url" `
 }
 
-// VersionInfo 微服务版本信息
+// SubVersionInfo 微服务版本信息
+type SubVersionInfo struct {
+	Name      string `json:"name"`
+	Version   string `json:"version"`
+	BuildTime string `json:"buildtime"`
+}
+
+// VersionInfo 整体版本信息
 type VersionInfo struct {
-	Name        string `json:"name"`
-	Version     string `json:"version"`
-	CreatedTime string
+	Version     string           `json:"version"`
+	Description string           `json:"description"`
+	SubVersion  []SubVersionInfo `json:"subversion"`
 }
 
 // MacInfo Mac 信息
@@ -34,19 +41,8 @@ type TimeInfo struct {
 	NtpURL    string `json:"ntpurl"`
 }
 
-// SystemNetInfo 系统网络信息
-type SystemNetInfo struct {
-	DHCPFlag bool `json:"flag"`
-}
-
 // FileInfo 文件信息
 type FileInfo struct {
 	Downloading bool   `json:"downloading"`
 	Message     string `json:"message"`
-}
-
-// Changelog 整体版本说明
-type Changelog struct {
-	Version         string   `json:"version"`
-	DescriptionList []string `json:"description_list"`
 }
