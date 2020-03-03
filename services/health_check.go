@@ -3,7 +3,6 @@ package services
 import (
 	"fmt"
 	"net/http"
-	"os/exec"
 	"sysmgmt-next/config"
 	"time"
 
@@ -31,24 +30,10 @@ func HealthCheck() {
 	IsHealth = true
 }
 
-// CheckLpr 检查 lpr
-func CheckLpr() {
-	out, err := exec.Command("/bin/sh", "-c", "/app/scripts/check_lpr.sh").Output()
-	if err != nil {
-		common.Log.Error("CheckLpr 执行 shell 失败: ", err)
-	}
-	str := string(out)
-	common.Log.Info(str)
-	if str == "" {
-		exec.Command("/bin/sh", "-c", "/app/scripts/restart.sh").Run()
-	}
-}
-
 // ScheduledHealthCheck 定时轮询任务
 func ScheduledHealthCheck() {
 	for {
 		HealthCheck()
-		CheckLpr()
 		time.Sleep(30 * time.Second)
 	}
 }
