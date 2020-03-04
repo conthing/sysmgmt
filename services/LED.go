@@ -12,6 +12,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
+// todo 删除掉前3个函数
 // ScheduledLED 指示灯
 func ScheduledLED(list []config.MicroService) {
 	for {
@@ -60,4 +61,26 @@ func controlWWWAndLink(s config.MicroService) {
 	default:
 		log.Fatal("配置文件错误，类型仅支持 ping 或 status")
 	}
+}
+
+// 1-status 2-www 3-link
+const (
+	constLedStatus string = "/dev/led-pwm1"
+	//todo 其他led的定义
+
+	constLedOff   byte = byte(0)
+	constLedOn    byte = byte(1)
+	constLedFlash byte = byte(2)
+)
+
+// setLed 设置led的开关闪状态
+func setLed(led string, status byte) error {
+	//todo 完成此函数
+	return nil
+}
+
+// GET此url，在HTTP返回码等于200，且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"时无错误，否则返回error
+func CheckURL(url string) error {
+	// todo 完成此函数
+	return nil
 }

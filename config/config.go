@@ -11,6 +11,7 @@ import (
 
 const file = "config.yaml"
 
+// todo 此结构体去除 ServiceNamelist 和 ServicePortlist 的定义，增加LED控制结构体，改完此配置结构体后再改其他地方
 // Config 配置文件结构
 type Config struct {
 	ServiceNamelist  []string
@@ -21,6 +22,16 @@ type Config struct {
 	MicroServiceList []MicroService
 }
 
+// todo 指示灯正常和异常分别对应什么表现，写到此处的注释里
+// 健康建查有失败的，status灯就正常，全部健康则异常
+// WWW和Link灯，每个灯对应一个URL列表。对每个URL的GET返回均正常，指示灯正常，任何一个URL返回不正常，指示灯异常
+// URL的GET返回正常是指：HTTP返回码等于200，且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"
+type StLedControl struct {
+	URLForWWWLed    []string
+	URLForStatusLed []string
+}
+
+// todo 这个结构体里增加端口号定义，增加是否健康检查的bool字段，去除LED定义
 // MicroService 微服务配置
 type MicroService struct {
 	Name string
@@ -42,7 +53,7 @@ var Conf = Config{
 	Port:            52035,
 	ShellPath:       "/app/sysmgmt/res/",
 	MDNS: MDNS{
-		Name: "主机",
+		Name: "conthing",
 		Port: 42424,
 	},
 	MicroServiceList: []MicroService{

@@ -10,7 +10,6 @@ func main() {
 	config.Service()
 	services.MDNS(config.Conf.MDNS)
 
-	// todo: 测试 WatchDog
 	// services.WatchDog()
 	go services.ScheduledHealthCheck()
 	go services.ScheduledLED(config.Conf.MicroServiceList)
