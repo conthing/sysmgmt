@@ -11,33 +11,37 @@ import (
 
 const file = "config.yaml"
 
-// todo 此结构体去除 ServiceNamelist 和 ServicePortlist 的定义，增加LED控制结构体，改完此配置结构体后再改其他地方
 // Config 配置文件结构
 type Config struct {
-	ServiceNamelist  []string
-	ServicePortlist  []string
+	ControlLed       StLedControl
 	Port             int
 	ShellPath        string
 	MDNS             MDNS
 	MicroServiceList []MicroService
 }
 
-// todo 指示灯正常和异常分别对应什么表现，写到此处的注释里
-// 健康建查有失败的，status灯就正常，全部健康则异常
+// 健康检查有失败的，status灯就正常，全部健康则异常
 // WWW和Link灯，每个灯对应一个URL列表。对每个URL的GET返回均正常，指示灯正常，任何一个URL返回不正常，指示灯异常
 // URL的GET返回正常是指：HTTP返回码等于200，且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"
+
+//Link灯(D9或led-pwm3)正常:当获取zigbee的mesh时返回是200且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"或者lpr的485运行正常
+//Link灯(D9或led-pwm3)异常:当获取zigbee的mesh时返回不是200且body里包含以下字符串的任意一个"err, fail, disconnect, timeout"或者lpr的485运行不正常
+//WWW灯(D8或led-pwm2)正常:当获取zap的status为connected或者(和)获取lpr的status为connected时
+//WWW灯(D8或led-pwm2)异常:当获取zap的status为disconnected或者(和)获取lpr的status为disconnected时
+//Status灯(D7或led-pwm1)正常:当对每个微服务健康检查(ping)时每个微服务返回都是pong
+//Status灯(D7或led-pwm1)异常:当对每个微服务健康检查(ping)时只要有一个微服务返回的不是pong
 type StLedControl struct {
-	URLForWWWLed    []string
-	URLForStatusLed []string
+	URLForWWWLed  []string
+	URLForLinkLed []string
 }
 
-// todo 这个结构体里增加端口号定义，增加是否健康检查的bool字段，去除LED定义
 // MicroService 微服务配置
 type MicroService struct {
-	Name string
-	URL  string
-	LED  string
-	Type string
+	Name            string
+	URL             string
+	Type            string
+	ServicePortlist []string
+	IsHealth        bool
 }
 
 // MDNS 发现服务
@@ -48,20 +52,23 @@ type MDNS struct {
 
 // Conf 全局配置
 var Conf = Config{
-	ServiceNamelist: make([]string, 0),
-	ServicePortlist: make([]string, 0),
-	Port:            52035,
-	ShellPath:       "/app/sysmgmt/res/",
+	ControlLed: StLedControl{
+		URLForWWWLed:  []string{"http://localhost:52032/api/v1/status", "http://localhost:52018/api/v1/status"},
+		URLForLinkLed: []string{"http://localhost:52032/api/v1/mesh", "http://localhost:52032/api/v1/ping"},
+	},
+	Port:      52035,
+	ShellPath: "/app/sysmgmt/res/",
 	MDNS: MDNS{
 		Name: "conthing",
 		Port: 42424,
 	},
 	MicroServiceList: []MicroService{
 		{
-			Name: "lpr",
-			Type: "ping",
-			URL:  "http://localhost:52032/api/v1/status",
-			LED:  "/dev/led-pwm3",
+			Name:            "lpr",
+			Type:            "ping",
+			URL:             "http://localhost:52032/api/v1/status",
+			ServicePortlist: []string{"52032", "52018"},
+			IsHealth:        true,
 		},
 	},
 }

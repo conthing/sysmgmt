@@ -28,10 +28,10 @@ func GetVersion(c *gin.Context) {
 		globalVersion.Description = strings.TrimSpace(text[1])
 	}
 
-	servicenamelist := config.Conf.ServiceNamelist
-	serviceportlist := config.Conf.ServicePortlist
+	service := config.MicroService{}
+	serviceportlist := service.ServicePortlist
 	var version dto.SubVersionInfo
-	for i, servicename := range servicenamelist {
+	for i, servicename := range serviceportlist {
 		resp, err := http.Get("http://localhost:" + serviceportlist[i] + "/api/v1/version")
 		if err != nil || resp.StatusCode != 200 {
 			continue
