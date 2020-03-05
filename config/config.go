@@ -24,6 +24,7 @@ type Config struct {
 // WWW和Link灯，每个灯对应一个URL列表。对每个URL的GET返回均正常，指示灯正常，任何一个URL返回不正常，指示灯异常
 // URL的GET返回正常是指：HTTP返回码等于200，且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"
 
+// todo review 这段注释和上面的意思重复了，需要你添加的是指示灯的表现，亮灭闪这些，这些我不记得
 //Link灯(D9或led-pwm3)正常:当获取zigbee的mesh时返回是200且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"或者lpr的485运行正常
 //Link灯(D9或led-pwm3)异常:当获取zigbee的mesh时返回不是200且body里包含以下字符串的任意一个"err, fail, disconnect, timeout"或者lpr的485运行不正常
 //WWW灯(D8或led-pwm2)正常:当获取zap的status为connected或者(和)获取lpr的status为connected时
@@ -35,6 +36,7 @@ type StLedControl struct {
 	URLForLinkLed []string
 }
 
+// todo review 不是ServicePortlist，应该是一个端口号；增加的bool是是否进行健康检查，不是是否健康
 // MicroService 微服务配置
 type MicroService struct {
 	Name            string

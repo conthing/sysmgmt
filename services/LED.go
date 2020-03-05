@@ -1,8 +1,9 @@
 package services
 
 import (
-	"github.com/conthing/utils/common"
 	"net/http"
+
+	"github.com/conthing/utils/common"
 )
 
 // 1-status 2-www 3-link
@@ -23,6 +24,7 @@ func setLed(led string, status byte) error {
 	return nil
 }
 
+// resp的Status是返回码，body里才是字符串，字符串判断的依据是包含，不是等于，参考原来的http.Get的地方怎么写的
 // GET此url，在HTTP返回码等于200，且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"时无错误，否则返回error
 func CheckURL(url string) error {
 	resp, err := http.Get(url)

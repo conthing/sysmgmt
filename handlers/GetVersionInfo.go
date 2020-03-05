@@ -28,6 +28,7 @@ func GetVersion(c *gin.Context) {
 		globalVersion.Description = strings.TrimSpace(text[1])
 	}
 
+	// todo review MicroService结构里不应该是ServicePortlist，所以这里也错了
 	service := config.MicroService{}
 	serviceportlist := service.ServicePortlist
 	var version dto.SubVersionInfo
