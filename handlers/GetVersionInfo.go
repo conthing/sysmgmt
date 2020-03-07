@@ -28,24 +28,21 @@ func GetVersion(c *gin.Context) {
 		globalVersion.Description = strings.TrimSpace(text[1])
 	}
 
-	// todo review MicroService结构里不应该是ServicePortlist，所以这里也错了
-	service := config.MicroService{}
-	serviceportlist := service.ServicePortlist
 	var version dto.SubVersionInfo
-	for i, servicename := range serviceportlist {
-		resp, err := http.Get("http://localhost:" + serviceportlist[i] + "/api/v1/version")
+	microservicelist := config.Conf.MicroServiceList
+	for _, microservice := range microservicelist {
+		resp, err := http.Get("http://localhost:" + string(microservice.Port) + "/api/v1/version")
 		if err != nil || resp.StatusCode != 200 {
 			continue
 		}
 		defer resp.Body.Close()
 		body, _ := ioutil.ReadAll(resp.Body)
 		str := string(body)
-		strArray := strings.Split(str, " ")
-		version.Name = servicename
-		version.Version = strArray[0]
-		version.BuildTime = strArray[1] + " " + strArray[2] //todo 没有检查
+		strArry := strings.Split(str, "")
+		version.Name = microservice.Name
+		version.Version = strArry[0]
+		version.BuildTime = strArry[1] + "" + strArry[2]
 		globalVersion.SubVersion = append(globalVersion.SubVersion, version)
 	}
-
 	c.JSON(http.StatusOK, globalVersion)
 }

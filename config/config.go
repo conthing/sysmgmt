@@ -24,26 +24,24 @@ type Config struct {
 // WWW和Link灯，每个灯对应一个URL列表。对每个URL的GET返回均正常，指示灯正常，任何一个URL返回不正常，指示灯异常
 // URL的GET返回正常是指：HTTP返回码等于200，且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"
 
-// todo review 这段注释和上面的意思重复了，需要你添加的是指示灯的表现，亮灭闪这些，这些我不记得
-//Link灯(D9或led-pwm3)正常:当获取zigbee的mesh时返回是200且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"或者lpr的485运行正常
-//Link灯(D9或led-pwm3)异常:当获取zigbee的mesh时返回不是200且body里包含以下字符串的任意一个"err, fail, disconnect, timeout"或者lpr的485运行不正常
-//WWW灯(D8或led-pwm2)正常:当获取zap的status为connected或者(和)获取lpr的status为connected时
-//WWW灯(D8或led-pwm2)异常:当获取zap的status为disconnected或者(和)获取lpr的status为disconnected时
-//Status灯(D7或led-pwm1)正常:当对每个微服务健康检查(ping)时每个微服务返回都是pong
-//Status灯(D7或led-pwm1)异常:当对每个微服务健康检查(ping)时只要有一个微服务返回的不是pong
+//Link灯(D9或led-pwm3)亮:当获取zigbee的mesh时返回是200且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"或者lpr的485运行正常
+//Link灯(D9或led-pwm3)灭:当获取zigbee的mesh时返回不是200且body里包含以下字符串的任意一个"err, fail, disconnect, timeout"或者lpr的485运行不正常
+//WWW灯(D8或led-pwm2)亮:当获取zap的status为connected或者(和)获取lpr的status为connected时
+//WWW灯(D8或led-pwm2)灭:当获取zap的status为disconnected或者(和)获取lpr的status为disconnected时
+//Status灯(D7或led-pwm1)亮:当对每个微服务健康检查(ping)时每个微服务返回都是pong
+//Status灯(D7或led-pwm1)闪:当对每个微服务健康检查(ping)时只要有一个微服务返回的不是pong
 type StLedControl struct {
 	URLForWWWLed  []string
 	URLForLinkLed []string
 }
 
-// todo review 不是ServicePortlist，应该是一个端口号；增加的bool是是否进行健康检查，不是是否健康
 // MicroService 微服务配置
 type MicroService struct {
-	Name            string
-	URL             string
-	Type            string
-	ServicePortlist []string
-	IsHealth        bool
+	Name         string
+	URL          string
+	Type         string
+	Port         int
+	EnableHealth bool
 }
 
 // MDNS 发现服务
@@ -66,11 +64,11 @@ var Conf = Config{
 	},
 	MicroServiceList: []MicroService{
 		{
-			Name:            "lpr",
-			Type:            "ping",
-			URL:             "http://localhost:52032/api/v1/status",
-			ServicePortlist: []string{"52032", "52018"},
-			IsHealth:        true,
+			Name:         "lpr",
+			Type:         "ping",
+			URL:          "http://localhost:52032/api/v1/status",
+			Port:         52018,
+			EnableHealth: true,
 		},
 	},
 }

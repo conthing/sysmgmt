@@ -1,4 +1,3 @@
-servicenamelist: []
 serviceportlist: [52032, 52018]
 port: 52035
 shellpath: /app/sysmgmt/res/
@@ -22,3 +21,7 @@ microservicelist:
     type: ping
     url: http://localhost:52018/api/v1/ping
     led: /dev/led-pwm1
+  - name: zigbee
+      type: mesh
+      url: http://localhost:52032/api/v1/mesh
+      led: /dev/led-pwm3
