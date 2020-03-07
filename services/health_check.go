@@ -2,12 +2,14 @@ package services
 
 import (
 	"fmt"
-	"github.com/conthing/utils/common"
 	"net/http"
 	"sysmgmt-next/config"
 	"time"
+
+	"github.com/conthing/utils/common"
 )
 
+// todo review 这里返回故障时要做到：如果两个微服务ping失败，error信息中String为"xxx yyy health check failed"，有点难，不要花太长时间，我会教你的
 // HealthCheck 健康检查
 func HealthCheck() error {
 	microservicelist := config.Conf.MicroServiceList
@@ -30,7 +32,7 @@ func HealthCheck() error {
 // ScheduledHealthCheck 定时轮询任务
 func ScheduledHealthCheck() {
 	go func() {
-		setLed()
+		setLed() // todo review 因为setLed不对，所以这个写法不对；应该讲你现在实现的setLed里的一些内容搬过来
 		HealthCheck()
 		time.Sleep(30 * time.Second)
 	}()

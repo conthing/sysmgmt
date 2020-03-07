@@ -1,12 +1,13 @@
 package services
 
 import (
-	"github.com/conthing/utils/common"
 	"io/ioutil"
 	"net/http"
 	"os/exec"
 	"strings"
 	"sysmgmt-next/config"
+
+	"github.com/conthing/utils/common"
 )
 
 // 1-status 2-www 3-link
@@ -21,6 +22,9 @@ const (
 	constLedFlash byte = byte(2)
 )
 
+// todo review 这里不对，把我给的函数原型怎么都改了
+// 原型恢复后，达到这样的效果：如果调用方式是setLed(constLedStatus,constLedFlash)，函数里就会执行/usr/test/led-pwm-start /dev/led-pwm1 ...
+// 所以setLed的函数体里面，是根据入参“选择”exec不通的内容，并判断返回是否正常
 // setLed 设置led的开关闪状态
 func setLed() error {
 	microservicelist := config.Conf.MicroServiceList
@@ -82,6 +86,7 @@ func CheckURL(url string) error {
 	if resp.StatusCode == 200 && strings.Contains("err", str) == false && strings.Contains("fail", str) == false && strings.Contains("disconnect", str) == false && strings.Contains("timeout", str) == false {
 		common.Log.Info("运行正常!")
 	}
+	// todo review 这个 if和上面的if的关系是什么？这么写是错的
 	if strings.Contains("err", str) == true || strings.Contains("fail", str) == true || strings.Contains("disconnect", str) == true || strings.Contains("timeout", str) == true {
 		common.Log.Error("运行不正常: ", str)
 		return err
