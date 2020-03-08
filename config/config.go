@@ -36,6 +36,7 @@ type StLedControl struct {
 	URLForLinkLed []string
 }
 
+// todo again 这里的Type和URL应该删除
 // MicroService 微服务配置
 type MicroService struct {
 	Name         string
@@ -51,7 +52,7 @@ type MDNS struct {
 	Port int
 }
 
-// 这里应该是没有配置时的默认值，应该是空，代码中不应该出现具体服务的名字和端口
+// todo again 这里应该是没有配置时的默认值，应该是空，代码中不应该出现具体服务的名字和端口
 // Conf 全局配置
 var Conf = Config{
 	ControlLed: StLedControl{

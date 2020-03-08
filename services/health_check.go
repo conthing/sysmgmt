@@ -20,6 +20,7 @@ func HealthCheck() error {
 		if microservice.EnableHealth == true {
 			resp, err := http.Get(fmt.Sprintf("http://localhost:%s/api/v1/ping", microservice.Port))
 			if err != nil || resp.StatusCode != 200 {
+				// todo again 这里意思也对了，但如果有3个微服务出错呢？所以这种用1，2的方式不行，还有日志不要用中文
 				count++
 				if count == 1 {
 					stringname1 = microservice.Name
@@ -40,6 +41,7 @@ func HealthCheck() error {
 	return nil
 }
 
+// todo again 1.这个函数名和结构体中冲突，最好按照命名规则区分开，2.这里遍历的是MicroServiceList吗？3.函数体内出现了mesh字眼，说明肯定写错了
 func ControlLed() error {
 	microservicelist := config.Conf.MicroServiceList
 	for _, microservice := range microservicelist {
