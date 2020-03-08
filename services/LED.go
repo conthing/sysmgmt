@@ -1,13 +1,11 @@
 package services
 
 import (
+	"github.com/conthing/utils/common"
 	"io/ioutil"
 	"net/http"
 	"os/exec"
 	"strings"
-	"sysmgmt-next/config"
-
-	"github.com/conthing/utils/common"
 )
 
 // 1-status 2-www 3-link
@@ -26,48 +24,24 @@ const (
 // 原型恢复后，达到这样的效果：如果调用方式是setLed(constLedStatus,constLedFlash)，函数里就会执行/usr/test/led-pwm-start /dev/led-pwm1 ...
 // 所以setLed的函数体里面，是根据入参“选择”exec不通的内容，并判断返回是否正常
 // setLed 设置led的开关闪状态
-func setLed() error {
-	microservicelist := config.Conf.MicroServiceList
-	for _, microservice := range microservicelist {
-		if microservice.Type == "mesh" { //todo 问题二:485总线正常不知怎么确定  当时说LINK灯一方面获取到正确的mesh或485总线正常则常亮，否则灭掉
-			err := CheckURL("http://localhost:" + string(microservice.Port) + "/api/v1/mesh")
-			if err != nil {
-				exec.Command("/usr/test/led-hrtimer-close", constLedLink, string(constLedOff)).Output()
-				//exec.Command("/usr/test/led-hrtimer-close", constLedLink).Output()
-				return err
-			} else {
-				exec.Command("/usr/test/led-pwm-start", constLedLink, string(constLedOn)).Output()
-				//exec.Command("/usr/test/led-pwm-start", constLedLink, 200000000, 200000000).Output()
-				//或exec.Command("/usr/test/led-pwm-start-percent", constLedLink, 200000000, 100).Output()
-				return nil
-			}
+func setLed(led string, status byte) error {
+	if led == "constLedLink" {
+		if status == constLedOff {
+			exec.Command("/usr/test/led-hrtimer-close", constLedLink).Output()
+		} else if status == constLedOn {
+			exec.Command("/usr/test/led-pwm-start", constLedLink, "200000000", "200000000").Output()
 		}
-		if microservice.Type == "status" {
-			err := CheckURL("http://localhost:" + string(microservice.Port) + "/api/v1/status")
-			if err != nil {
-				exec.Command("/usr/test/led-hrtimer-close", constLedWWW, string(constLedOff)).Output()
-				//exec.Command("/usr/test/led-hrtimer-close", constLedWWW).Output()
-				return err
-			} else {
-				exec.Command("/usr/test/led-pwm-start", constLedWWW, string(constLedOn)).Output()
-				//exec.Command("/usr/test/led-pwm-start", constLedWWW, 200000000, 200000000).Output()
-				//或exec.Command("/usr/test/led-pwm-start-percent", constLedWWW, 200000000, 100).Output()
-				return nil
-			}
+	} else if led == "constLedWWW" {
+		if status == constLedOff {
+			exec.Command("/usr/test/led-hrtimer-close", constLedWWW).Output()
+		} else if status == constLedOn {
+			exec.Command("/usr/test/led-pwm-start", constLedWWW, "200000000", "200000000").Output()
 		}
-		if microservice.Type == "ping" {
-			err := CheckURL("http://localhost:" + string(microservice.Port) + "/api/v1/ping")
-			if err != nil {
-				exec.Command("/usr/test/led-pwm-start", constLedStatus, string(constLedFlash)).Output()
-				//exec.Command("/usr/test/led-pwm-start", constLedStatus, 200000000, 100000000).Output()
-				//或exec.Command("/usr/test/led-pwm-start-percent", constLedStatus, 200000000, 50).Output()
-				return err
-			} else {
-				exec.Command("/usr/test/led-pwm-start", constLedStatus, string(constLedOn)).Output()
-				//exec.Command("/usr/test/led-pwm-start", constLedStatus, 200000000, 200000000).Output()
-				//或exec.Command("/usr/test/led-pwm-start-percent", constLedStatus, 200000000, 100).Output()
-				return nil
-			}
+	} else if led == "constLedStatus" {
+		if status == constLedFlash {
+			exec.Command("/usr/test/led-pwm-start", constLedStatus, "200000000", "100000000").Output()
+		} else if status == constLedOn {
+			exec.Command("/usr/test/led-pwm-start", constLedStatus, "200000000", "200000000").Output()
 		}
 	}
 	return nil
@@ -83,13 +57,16 @@ func CheckURL(url string) error {
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	str := string(body)
-	if resp.StatusCode == 200 && strings.Contains("err", str) == false && strings.Contains("fail", str) == false && strings.Contains("disconnect", str) == false && strings.Contains("timeout", str) == false {
+	if resp.StatusCode == 200 && strings.Contains(str, "err") == false && strings.Contains(str, "fail") == false && strings.Contains(str, "disconnect") == false && strings.Contains(str, "timeout") == false {
 		common.Log.Info("运行正常!")
-	}
-	// todo review 这个 if和上面的if的关系是什么？这么写是错的
-	if strings.Contains("err", str) == true || strings.Contains("fail", str) == true || strings.Contains("disconnect", str) == true || strings.Contains("timeout", str) == true {
+	} else if strings.Contains(str, "err") == true || strings.Contains(str, "fail") == true || strings.Contains(str, "disconnect") == true || strings.Contains(str, "timeout") == true {
 		common.Log.Error("运行不正常: ", str)
 		return err
 	}
+	// todo review 这个 if和上面的if的关系是什么？这么写是错的
+	//if strings.Contains(str, "err") == true || strings.Contains(str, "fail") == true || strings.Contains(str, "disconnect") == true || strings.Contains(str, "timeout") == true {
+	//	common.Log.Error("运行不正常: ", str)
+	//	return err
+	//}
 	return nil
 }
