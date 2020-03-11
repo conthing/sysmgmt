@@ -1,4 +1,6 @@
-serviceportlist: [52032, 52018]
+controlled:
+  urlforwwwled: []string{"http://localhost:52018/api/v1/status", "http://localhost:52032/api/v1/status"}
+  urlforlinkled: []string{"http://localhost:52032/api/v1/mesh"}
 port: 52035
 shellpath: /app/sysmgmt/res/
 mdns:
@@ -6,22 +8,17 @@ mdns:
   port: 42424
 microservicelist:
   - name: lpr
-    type: status
-    url: http://localhost:52032/api/v1/status
-    led: /dev/led-pwm3
+    port: 52032
+    EnableHealth: true
   - name: lpr
-    type: ping
-    url: http://localhost:52032/api/v1/ping
-    led: /dev/led-pwm1
+    port: 52032
+    EnableHealth: true
   - name: exportmqtt
-    type: status
-    url: http://localhost:52018/api/v1/status
-    led: /dev/led-pwm2
+    port: 52018
+    EnableHealth: true
   - name: exportmqtt
-    type: ping
-    url: http://localhost:52018/api/v1/ping
-    led: /dev/led-pwm1
-  - name: zigbee
-      type: mesh
-      url: http://localhost:52032/api/v1/mesh
-      led: /dev/led-pwm3
+    port: 52018
+    EnableHealth: true
+  - name: mesh
+    port: 52032
+    EnableHealth: true

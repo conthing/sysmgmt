@@ -27,24 +27,12 @@ const (
 // setLed 设置led的开关闪状态
 // todo again 领会了我的意思了，但两点改进，1.三个灯都要支持亮灭闪，2..改变if判断的瞬息可以将结构优化一下
 func setLed(led string, status byte) error {
-	if led == "constLedLink" { //todo again 这里为什么加引号？？？
-		if status == constLedOff {
-			exec.Command("/usr/test/led-hrtimer-close", constLedLink).Output()
-		} else if status == constLedOn {
-			exec.Command("/usr/test/led-pwm-start", constLedLink, "200000000", "200000000").Output()
-		}
-	} else if led == "constLedWWW" {
-		if status == constLedOff {
-			exec.Command("/usr/test/led-hrtimer-close", constLedWWW).Output()
-		} else if status == constLedOn {
-			exec.Command("/usr/test/led-pwm-start", constLedWWW, "200000000", "200000000").Output()
-		}
-	} else if led == "constLedStatus" {
-		if status == constLedFlash {
-			exec.Command("/usr/test/led-pwm-start", constLedStatus, "200000000", "100000000").Output()
-		} else if status == constLedOn {
-			exec.Command("/usr/test/led-pwm-start", constLedStatus, "200000000", "200000000").Output()
-		}
+	if status == constLedOff {
+		exec.Command("/usr/test/led-hrtimer-close", led).Output()
+	} else if status == constLedOn {
+		exec.Command("/usr/test/led-pwm-start", led, "200000000", "199999999").Output()
+	} else if status == constLedFlash {
+		exec.Command("/usr/test/led-pwm-start", led, "200000000", "100000000").Output()
 	}
 	return nil
 }
@@ -61,15 +49,11 @@ func CheckURL(url string) error {
 	str := string(body)
 	// todo again 这个 if else 关系还是没有仔细考虑，还有日志不要用中文
 	if resp.StatusCode == 200 && strings.Contains(str, "err") == false && strings.Contains(str, "fail") == false && strings.Contains(str, "disconnect") == false && strings.Contains(str, "timeout") == false {
-		common.Log.Info("运行正常!")
-	} else if strings.Contains(str, "err") == true || strings.Contains(str, "fail") == true || strings.Contains(str, "disconnect") == true || strings.Contains(str, "timeout") == true {
-		common.Log.Error("运行不正常: ", str)
+		common.Log.Info("microservice is running success")
+	} else {
+		common.Log.Error("microservice is running fail", str)
 		return err
 	}
 	// todo review 这个 if和上面的if的关系是什么？这么写是错的
-	//if strings.Contains(str, "err") == true || strings.Contains(str, "fail") == true || strings.Contains(str, "disconnect") == true || strings.Contains(str, "timeout") == true {
-	//	common.Log.Error("运行不正常: ", str)
-	//	return err
-	//}
 	return nil
 }

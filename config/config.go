@@ -40,8 +40,6 @@ type StLedControl struct {
 // MicroService 微服务配置
 type MicroService struct {
 	Name         string
-	URL          string
-	Type         string
 	Port         int
 	EnableHealth bool
 }
@@ -56,22 +54,20 @@ type MDNS struct {
 // Conf 全局配置
 var Conf = Config{
 	ControlLed: StLedControl{
-		URLForWWWLed:  []string{"http://localhost:52032/api/v1/status", "http://localhost:52018/api/v1/status"},
-		URLForLinkLed: []string{"http://localhost:52032/api/v1/mesh", "http://localhost:52032/api/v1/ping"},
+		URLForWWWLed:  []string{},
+		URLForLinkLed: []string{},
 	},
-	Port:      52035,
-	ShellPath: "/app/sysmgmt/res/",
+	Port:      0,
+	ShellPath: "",
 	MDNS: MDNS{
-		Name: "conthing",
-		Port: 42424,
+		Name: "",
+		Port: 0,
 	},
 	MicroServiceList: []MicroService{
 		{
-			Name:         "lpr",
-			Type:         "ping",
-			URL:          "http://localhost:52032/api/v1/status",
-			Port:         52018,
-			EnableHealth: true,
+			Name:         "",
+			Port:         0,
+			EnableHealth: false,
 		},
 	},
 }

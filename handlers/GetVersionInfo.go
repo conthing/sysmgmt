@@ -38,8 +38,7 @@ func GetVersion(c *gin.Context) {
 		defer resp.Body.Close()
 		body, _ := ioutil.ReadAll(resp.Body)
 		str := string(body)
-		//解释:这里不是删除空格，而是以空格做为分隔符，将str(string)拆分成strArry([]string),  str的打印的信息是("1.1.4 2020-03-06 12:20:30"),strArry的打印信息是["1.1.4"， "2020-03-06"， "12:20:30"]
-		strArry := strings.Split(str, "") //todo review 这里为什么把空格删了！！！！修改这些东西不可不仔细
+		strArry := strings.Split(str, " ") //todo review 这里为什么把空格删了！！！！修改这些东西不可不仔细
 		version.Name = microservice.Name
 		version.Version = strArry[0]
 		version.BuildTime = strArry[1] + "" + strArry[2]
