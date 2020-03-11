@@ -9,8 +9,6 @@ import (
 	"github.com/conthing/utils/common"
 )
 
-const FILEPATH = "/app/sysmgmt/config.yaml"
-
 // todo review 这里返回故障时要做到：如果两个微服务ping失败，error信息中String为"xxx yyy health check failed"，有点难，不要花太长时间，我会教你的
 // HealthCheck 健康检查
 func HealthCheck() error {
