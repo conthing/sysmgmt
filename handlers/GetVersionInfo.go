@@ -38,7 +38,7 @@ func GetVersion(c *gin.Context) {
 		defer resp.Body.Close()
 		body, _ := ioutil.ReadAll(resp.Body)
 		str := string(body)
-		strArry := strings.Split(str, " ") //todo review 这里为什么把空格删了！！！！修改这些东西不可不仔细
+		strArry := strings.Split(str, " ")
 		version.Name = microservice.Name
 		version.Version = strArry[0]
 		version.BuildTime = strArry[1] + "" + strArry[2]

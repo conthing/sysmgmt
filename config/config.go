@@ -36,7 +36,6 @@ type StLedControl struct {
 	URLForLinkLed []string
 }
 
-// todo again 这里的Type和URL应该删除
 // MicroService 微服务配置
 type MicroService struct {
 	Name         string
