@@ -1,24 +1,18 @@
 controlled:
-  urlforwwwled: []string{"http://localhost:52018/api/v1/status", "http://localhost:52032/api/v1/status"}
-  urlforlinkled: []string{"http://localhost:52032/api/v1/mesh"}
+  urlforlinkled: {"http://localhost:52018/api/v1/status"}
+  urlforlinkled: {"http://localhost:52032/api/v1/status"}
 port: 52035
 shellpath: /app/sysmgmt/res/
 mdns:
   name: conthing-lpr
   port: 42424
 microservicelist:
-  - name: lpr
-    port: 52032
-    EnableHealth: true
+  - name: sysmgmt
+    port: 52035
+    EnableHealth: false
   - name: lpr
     port: 52032
     EnableHealth: true
   - name: exportmqtt
     port: 52018
-    EnableHealth: true
-  - name: exportmqtt
-    port: 52018
-    EnableHealth: true
-  - name: mesh
-    port: 52032
     EnableHealth: true
