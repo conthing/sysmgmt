@@ -11,9 +11,9 @@ func main() {
 	services.MDNS(config.Conf.MDNS)
 
 	// services.WatchDog()
-	go services.ScheduledHealthCheck()
-	go services.ScheduledLED(config.Conf.MicroServiceList)
-	router.Service(config.Conf)
+	services.ScheduledHealthCheck()
+	//go services.ScheduledLED(config.Conf.MicroServiceList)
+	router.Service(*config.Conf)
 
 	defer services.StopMDNS()
 

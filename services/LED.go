@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"os/exec"
 	"strings"
-
-	"github.com/conthing/utils/common"
 )
 
 // 1-status 2-www 3-link
@@ -47,10 +45,8 @@ func CheckURL(url string) error {
 	body, _ := ioutil.ReadAll(resp.Body)
 	str := string(body)
 	if resp.StatusCode == 200 && strings.Contains(str, "err") == false && strings.Contains(str, "fail") == false && strings.Contains(str, "disconnect") == false && strings.Contains(str, "timeout") == false {
-		common.Log.Info("microservice is running success")
 	} else {
-		common.Log.Error("microservice is running fail", str)
-		return err // todo 这里返回的话，err是什么？
+		return fmt.Errorf("%s response failed: %v", url, str) // todo 这里返回的话，err是什么？
 	}
 	return nil
 }
