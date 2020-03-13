@@ -39,14 +39,12 @@ func CheckURL(url string) error {
 	resp, err := http.Get(url)
 	if err != nil {
 		return fmt.Errorf("CheckURL failed: %v", err)
-		// todo 这里应该返回err
 	}
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	str := string(body)
-	if resp.StatusCode == 200 && strings.Contains(str, "err") == false && strings.Contains(str, "fail") == false && strings.Contains(str, "disconnect") == false && strings.Contains(str, "timeout") == false {
-	} else {
-		return fmt.Errorf("%s response failed: %v", url, str) // todo 这里返回的话，err是什么？
+	if resp.StatusCode != 200 || strings.Contains(str, "err") || strings.Contains(str, "fail") || strings.Contains(str, "disconnect") || strings.Contains(str, "timeout") {
+		return fmt.Errorf("%s response failed: %v", url, str)
 	}
 	return nil
 }

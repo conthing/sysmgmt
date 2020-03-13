@@ -21,6 +21,7 @@ func GetVersion(c *gin.Context) {
 	if err != nil {
 		common.Log.Errorf("open ../VERSION failed %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 	text := strings.SplitAfterN(string(out), "\n", 2) //用第一个 \n 分割字符串
 	globalVersion.Version = strings.TrimSpace(text[0])

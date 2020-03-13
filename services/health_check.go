@@ -11,14 +11,13 @@ import (
 
 // HealthCheck 健康检查
 func HealthCheck() error {
-	failservicename := []string{} //todo 这里变量的命名也不合适
+	failservicename := []string{}
 	successservicename := []string{}
 	microservicelist := config.Conf.MicroServiceList
 	for _, microservice := range microservicelist {
-		if microservice.EnableHealth == true {
-			resp, err := http.Get(fmt.Sprintf("http://localhost:%s/api/v1/ping", microservice.Port))
+		if microservice.EnableHealth {
+			resp, err := http.Get(fmt.Sprintf("http://localhost:%d/api/v1/ping", microservice.Port))
 			if err != nil || resp.StatusCode != 200 {
-				// todo again 这里日志有问题，返回Error在哪里？
 				failservicename = append(failservicename, microservice.Name)
 			} else {
 				successservicename = append(successservicename, microservice.Name)
@@ -28,14 +27,13 @@ func HealthCheck() error {
 	}
 	common.Log.Debugf("%v health check success", successservicename)
 	if failservicename != nil {
-		common.Log.Error("%v health check failed", failservicename)
+		common.Log.Errorf("%v health check failed", failservicename)
 		return fmt.Errorf("%v HealthCheck failed", failservicename)
 	}
 	return nil
 }
 
-// todo again 函数命名不合适，return 乱七八糟，日志位置也不对
-func CtrlLED() error {
+func CtrlLED() {
 	microservice := config.Conf.ControlLed
 	ledStatus := constLedOn
 	for _, wwwurl := range microservice.URLForWWWLed {
@@ -44,7 +42,7 @@ func CtrlLED() error {
 			ledStatus = constLedOff
 		}
 	}
-	setLed(constLedWWW, ledStatus)
+	_ = setLed(constLedWWW, ledStatus) // ignore return error
 
 	ledStatus = constLedOn
 	for _, linkurl := range microservice.URLForLinkLed {
@@ -53,8 +51,7 @@ func CtrlLED() error {
 			ledStatus = constLedOff
 		}
 	}
-	setLed(constLedLink, ledStatus)
-	return nil
+	_ = setLed(constLedLink, ledStatus) // ignore return error
 }
 
 // ScheduledHealthCheck 定时轮询任务
@@ -63,10 +60,10 @@ func ScheduledHealthCheck() {
 		CtrlLED()
 		err := HealthCheck()
 		if err != nil {
-			setLed(constLedStatus, constLedFlash)
+			_ = setLed(constLedStatus, constLedFlash) // ignore return error
 			//common.Log.Error(err)
 		} else {
-			setLed(constLedStatus, constLedOn)
+			_ = setLed(constLedStatus, constLedOn) // ignore return error
 		}
 		time.Sleep(30 * time.Second)
 	}()

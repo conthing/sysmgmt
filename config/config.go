@@ -24,7 +24,6 @@ type Config struct {
 // WWW和Link灯，每个灯对应一个URL列表。对每个URL的GET返回均正常，指示灯常亮，任何一个URL返回不正常，指示灯常灭
 // URL的GET返回正常是指：HTTP返回码等于200，且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"
 
-// todo review 这段注释和上面的意思重复了，需要你添加的是指示灯的表现，亮灭闪这些，这些我不记得
 type StLedControl struct {
 	URLForWWWLed  []string
 	URLForLinkLed []string
@@ -43,27 +42,6 @@ type MDNS struct {
 	Port int
 }
 
-// todo again 这里应该是没有配置时的默认值，应该是空，代码中不应该出现具体服务的名字和端口
-// Conf 全局配置
-//var Conf = Config{
-//	ControlLed: StLedControl{
-//		URLForWWWLed:  []string{},
-//		URLForLinkLed: []string{},
-//	},
-//	Port:      0,
-//	ShellPath: "",
-//	MDNS: MDNS{
-//		Name: "",
-//		Port: 0,
-//	},
-//	MicroServiceList: []MicroService{
-//		{
-//			Name:         "",
-//			Port:         0,
-//			EnableHealth: false,
-//		},
-//	},
-//}
 var Conf = &Config{}
 
 //Service 配置初始化服务
