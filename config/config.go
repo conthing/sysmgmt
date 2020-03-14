@@ -2,8 +2,8 @@ package config
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"gopkg.in/yaml.v2"
@@ -45,57 +45,51 @@ type MDNS struct {
 var Conf = &Config{}
 
 //Service 配置初始化服务
-func Service() {
-
+func Service() error {
+	var err error
 	if !exists(file) {
-		createConfigFile()
+		err = createConfigFile()
+		if err != nil {
+			return fmt.Errorf("create file failed %v", err)
+		}
 	}
 	yamlFile, err := ioutil.ReadFile(file)
 	if err != nil {
-		log.Fatal("读取配置文件失败", err)
+		return fmt.Errorf("ReadFile failed %v", err)
 	}
 
 	err = yaml.Unmarshal(yamlFile, &Conf)
 	if err != nil {
-		log.Fatal("配置文件序列化失败", err)
+		return fmt.Errorf("Unmarshal failed %v", err)
 	}
-
+	return nil
 }
 
 // exists 判断所给路径文件/文件夹是否存在
 func exists(path string) bool {
 	_, err := os.Stat(path) //os.Stat获取文件信息
 	if err != nil {
-		if os.IsExist(err) {
-			log.Println(err)
-			return true
-		}
-		return false
+		return os.IsExist(err)
 	}
 	return true
 }
 
-func createConfigFile() {
+func createConfigFile() error {
 	buf := new(bytes.Buffer)
 	err := yaml.NewEncoder(buf).Encode(Conf)
 	if err != nil {
-		log.Fatal("配置文件编码失败", err)
+		return fmt.Errorf("Encode config file failed %v", err)
 	}
 
 	f, err := os.Create(file)
 	if err != nil {
-		log.Fatal("配置文件创建失败", err)
+		return fmt.Errorf("Create config file failed %v", err)
 	}
-	defer func() {
-		err := f.Close()
-		if err != nil {
-			log.Fatal("配置文件关闭失败", err)
-		}
-
-	}()
+	defer f.Close()
 
 	_, err = f.Write(buf.Bytes())
 	if err != nil {
-		log.Fatal("配置文件写入失败", err)
+		return fmt.Errorf("Write config file failed %v", err)
 	}
+	return nil
 }

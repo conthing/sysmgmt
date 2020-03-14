@@ -1,15 +1,20 @@
 package main
 
 import (
-	"log"
 	"sysmgmt-next/config"
 	"sysmgmt-next/router"
 	"sysmgmt-next/services"
 	"time"
+
+	"github.com/conthing/utils/common"
 )
 
 func main() {
-	config.Service()
+	err := config.Service()
+	if err != nil {
+		common.Log.Errorf("load config failed %v", err)
+	}
+	common.Log.Infof("config: %v", config.Conf)
 	services.MDNS(config.Conf.MDNS)
 
 	// WatchDog()
@@ -31,16 +36,16 @@ func WatchDog() {
 				case <-time.After(time.Second * 4):
 					err = services.KeepAlive(wdt) //10s超时
 					if err != nil {
-						log.Fatalf("feed dog failed: %v", err)
+						common.Log.Errorf("feed dog failed: %v", err)
 					} else {
-						log.Println("feed dog ok")
+						common.Log.Debug("feed dog ok")
 					}
 				}
 
 			}
 
 		} else {
-			log.Fatal("watchdog init failed: ", err)
+			common.Log.Errorf("watchdog init failed: ", err)
 		}
 	}()
 }

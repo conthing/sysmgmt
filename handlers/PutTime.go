@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"os/exec"
 	"sysmgmt-next/config"
 	"sysmgmt-next/dto"
 	"time"
 
+	"github.com/conthing/utils/common"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,5 +26,5 @@ func PutTime(c *gin.Context) {
 	time := time.Unix(info.Date, 0)
 	command := exec.Command(shellPath, info.Type, time.Format("2006-01-02 15:04:05"), info.URL)
 	out, err := command.Output()
-	log.Printf("timedatectl output:%s,err:%v", string(out), err)
+	common.Log.Debugf("timedatectl output:%s,err:%v", string(out), err)
 }

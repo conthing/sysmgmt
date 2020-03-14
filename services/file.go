@@ -2,10 +2,10 @@ package services
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 
+	"github.com/conthing/utils/common"
 	"gopkg.in/yaml.v2"
 )
 
@@ -39,28 +39,28 @@ func UpdateService() error {
 
 	err := UnZip()
 	if err != nil {
-		log.Println("Unzip", err)
+		common.Log.Error("Unzip failed ", err)
 
 		return err
 	}
 
 	err = ReadYAML(&c)
 	if err != nil {
-		log.Println("Read", err)
+		common.Log.Error("Read failed ", err)
 
 		return err
 	}
 
 	err = Install(&c)
 	if err != nil {
-		log.Println("Install", err)
+		common.Log.Error("Install failed ", err)
 
 		return err
 	}
 
 	err = Clean()
 	if err != nil {
-		log.Println("Clean 2", err)
+		common.Log.Error("Clean failed ", err)
 
 		return err
 	}
@@ -123,7 +123,7 @@ func Install(c *ItemCollection) error {
 // arm 板需要安装 zip (apt install zip)
 func UnZip() error {
 	out, err := exec.Command("bash", "-c", "cd /tmp/ && unzip /tmp/file.zip").Output()
-	log.Println(string(out))
+	common.Log.Debug(string(out))
 	if err != nil {
 		return err
 	}
@@ -136,14 +136,16 @@ func UnZip() error {
 func ReadYAML(c *ItemCollection) error {
 	yamlFile, err := ioutil.ReadFile("/tmp/file/update.yaml")
 	if err != nil {
+		common.Log.Error("ReadFile failed ", err)
 		return err
 	}
 
 	err = yaml.Unmarshal(yamlFile, c)
-	log.Println(c)
 	if err != nil {
+		common.Log.Error("Unmarshal failed ", err)
 		return err
 	}
+	common.Log.Debug("config: ", c)
 	return nil
 
 }
@@ -158,7 +160,7 @@ func add(item AddItem) error {
 func put(item PutItem) error {
 	err := os.RemoveAll(item.Dst)
 	if err != nil {
-		log.Println("removeall 失败", err)
+		common.Log.Error("removeall failed ", err)
 		return err
 	}
 	err = os.Rename(item.Src, item.Dst)
@@ -180,11 +182,7 @@ func del(item DelItem) error {
 func exists(path string) bool {
 	_, err := os.Stat(path) //os.Stat获取文件信息
 	if err != nil {
-		if os.IsExist(err) {
-			log.Println(err)
-			return true
-		}
-		return false
+		return os.IsExist(err)
 	}
 	return true
 }

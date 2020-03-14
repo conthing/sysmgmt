@@ -1,9 +1,9 @@
 package services
 
 import (
-	"log"
 	"sysmgmt-next/config"
 
+	"github.com/conthing/utils/common"
 	"github.com/grandcat/zeroconf"
 )
 
@@ -14,9 +14,9 @@ func MDNS(cnf config.MDNS) {
 	var err error
 	server, err = zeroconf.Register(cnf.Name, "_workstation._tcp", "local.", cnf.Port, []string{"txtv=0", "lo=1", "la=2"}, nil)
 	if err != nil {
-		log.Fatal(err)
+		common.Log.Errorf("MDNS start failed: %v", err)
 	}
-	log.Println("MDNS 启动成功")
+	common.Log.Infof("MDNS start on %d", cnf.Port)
 }
 
 // StopMDNS 关闭MDNS

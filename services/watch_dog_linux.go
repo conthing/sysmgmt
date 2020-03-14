@@ -2,10 +2,11 @@ package services
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"syscall"
 	"unsafe"
+
+	"github.com/conthing/utils/common"
 )
 
 const (
@@ -33,7 +34,7 @@ func GetWatchDog(timeout int) (*os.File, error) {
 	if r != 0 {
 		return nil, fmt.Errorf("unknown error from SYS_IOCTL")
 	}
-	log.Printf("Watchdog init %d sec timeout", timeout)
+	common.Log.Warnf("Watchdog init %d sec timeout", timeout)
 	return file, nil
 }
 
@@ -51,6 +52,6 @@ func KeepAlive(file *os.File) error {
 	if r != 0 {
 		return fmt.Errorf("unknown error from SYS_IOCTL")
 	}
-	log.Println("feed dog")
+	common.Log.Debug("feed dog")
 	return nil
 }

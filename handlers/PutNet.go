@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"os/exec"
 	"sysmgmt-next/config"
@@ -13,12 +12,12 @@ import (
 
 // PutNet 修改IP
 func PutNet(c *gin.Context) {
+	common.Log.Debugf("HTTP: %v", c)
 	var info dto.NetInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	log.Println(info)
 	shellPath := config.Conf.ShellPath + "modifiedIP.sh"
 	go runShell(shellPath, info)
 }
@@ -26,7 +25,7 @@ func PutNet(c *gin.Context) {
 func runShell(shellPath string, s dto.NetInfo) {
 	netname := common.GetMajorInterface()
 	if netname == "" {
-		log.Fatal("GetMajorInterface failed")
+		common.Log.Errorf("GetMajorInterface failed")
 	} else {
 		nettype := "static"
 		if s.DHCP {
@@ -34,6 +33,6 @@ func runShell(shellPath string, s dto.NetInfo) {
 		}
 		command := exec.Command(shellPath, common.GetMajorInterface(), nettype, s.Address, s.Netmask, s.Gateway) //初始化Cmd
 		out, _ := command.Output()
-		log.Printf("modified ip output:%s", string(out))
+		common.Log.Debugf("modified ip output:%s", string(out))
 	}
 }
