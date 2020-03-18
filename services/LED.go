@@ -10,13 +10,13 @@ import (
 
 // 1-status 2-www 3-link
 const (
-	constLedStatus string = "/dev/led-pwm1"
-	constLedWWW    string = "/dev/led-pwm2"
-	constLedLink   string = "/dev/led-pwm3"
-
-	constLedOff   byte = byte(0)
-	constLedOn    byte = byte(1)
-	constLedFlash byte = byte(2)
+	constLedCommand string = "/usr/test/led-pwm-test"
+	constLedStatus  string = "/dev/led-pwm1"
+	constLedWWW     string = "/dev/led-pwm2"
+	constLedLink    string = "/dev/led-pwm3"
+	constLedOff     byte   = byte(0)
+	constLedOn      byte   = byte(1)
+	constLedFlash   byte   = byte(2)
 )
 
 // 原型恢复后，达到这样的效果：如果调用方式是setLed(constLedStatus,constLedFlash)，函数里就会执行/usr/test/led-pwm-start /dev/led-pwm1 ...
@@ -24,11 +24,11 @@ const (
 // setLed 设置led的开关闪状态
 func setLed(led string, status byte) error {
 	if status == constLedOff {
-		exec.Command("/usr/test/led-hrtimer-close", led).Output()
+		exec.Command(constLedCommand, "0", led).Output()
 	} else if status == constLedOn {
-		exec.Command("/usr/test/led-pwm-start", led, "200000000", "199999999").Output()
+		exec.Command(constLedCommand, "1", led, "200000000", "199999999").Output()
 	} else if status == constLedFlash {
-		exec.Command("/usr/test/led-pwm-start", led, "200000000", "100000000").Output()
+		exec.Command(constLedCommand, "1", led, "200000000", "100000000").Output()
 	}
 	return nil
 }
