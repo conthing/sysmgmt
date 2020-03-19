@@ -9,10 +9,10 @@ mdns:
 microservicelist:
   - name: sysmgmt
     port: 52035
-    EnableHealth: false
+    enablehealth: false
   - name: lpr
     port: 52032
-    EnableHealth: true
+    enablehealth: true
   - name: exportmqtt
     port: 52018
-    EnableHealth: true
+    enablehealth: true
