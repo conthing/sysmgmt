@@ -44,7 +44,7 @@ func CheckURL(url string) error {
 	body, _ := ioutil.ReadAll(resp.Body)
 	str := string(body)
 	if resp.StatusCode != 200 || strings.Contains(str, "err") || strings.Contains(str, "fail") || strings.Contains(str, "disconnect") || strings.Contains(str, "timeout") {
-		return fmt.Errorf("%s response failed: %v", url, str)
+		return fmt.Errorf("%s response failed: code:%d, body%v", url, resp.StatusCode, str)
 	}
 	return nil
 }

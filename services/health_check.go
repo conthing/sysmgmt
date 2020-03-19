@@ -15,6 +15,7 @@ func HealthCheck() error {
 	successservicename := ""
 	microservicelist := config.Conf.MicroServiceList
 	for _, microservice := range microservicelist {
+		common.Log.Debugf("ms: %v", microservice)
 		if microservice.EnableHealth {
 			url := fmt.Sprintf("http://localhost:%d/api/v1/ping", microservice.Port)
 			resp, err := http.Get(url)
@@ -25,7 +26,9 @@ func HealthCheck() error {
 				common.Log.Debugf("Get %s success", url)
 				successservicename += microservice.Name + ","
 			}
-			defer resp.Body.Close()
+			if err == nil {
+				defer resp.Body.Close()
+			}
 		}
 	}
 	if successservicename != "" {
@@ -46,8 +49,9 @@ func CtrlLED() {
 		if err != nil {
 			common.Log.Errorf("CheckURL %s failed: %v", wwwurl, err)
 			ledStatus = constLedOff
+		} else {
+			common.Log.Debugf("CheckURL %s pass", wwwurl)
 		}
-		common.Log.Debugf("CheckURL %s pass", wwwurl)
 	}
 	_ = setLed(constLedWWW, ledStatus) // ignore return error
 
@@ -57,8 +61,9 @@ func CtrlLED() {
 		if err != nil {
 			common.Log.Errorf("CheckURL %s failed: %v", linkurl, err)
 			ledStatus = constLedOff
+		} else {
+			common.Log.Debugf("CheckURL %s pass", linkurl)
 		}
-		common.Log.Debugf("CheckURL %s pass", linkurl)
 	}
 	_ = setLed(constLedLink, ledStatus) // ignore return error
 }
