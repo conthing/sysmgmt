@@ -52,7 +52,7 @@ func GetVersion(c *gin.Context) {
 		strArry := strings.Split(str, " ")
 		version.Name = microservice.Name
 		version.Version = strArry[0]
-		version.BuildTime = strArry[1] + "" + strArry[2]
+		version.BuildTime = strArry[1] + " " + strArry[2]
 		globalVersion.SubVersion = append(globalVersion.SubVersion, version)
 	}
 	c.JSON(http.StatusOK, globalVersion)
