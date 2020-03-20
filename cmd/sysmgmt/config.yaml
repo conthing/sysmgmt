@@ -1,5 +1,5 @@
 controlled:
-  urlforlinkled: {"http://localhost:52018/api/v1/status"}
+  urlforwwwled: {"http://localhost:52018/api/v1/status"}
   urlforlinkled: {"http://localhost:52032/api/v1/status"}
 port: 52035
 shellpath: /app/sysmgmt/res/
@@ -7,9 +7,6 @@ mdns:
   name: conthing-lpr
   port: 42424
 microservicelist:
-  - name: sysmgmt
-    port: 52035
-    enablehealth: false
   - name: lpr
     port: 52032
     enablehealth: true

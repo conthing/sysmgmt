@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sysmgmt-next/config"
 	"sysmgmt-next/dto"
@@ -28,17 +29,26 @@ func GetVersion(c *gin.Context) {
 	if len(text) > 1 {
 		globalVersion.Description = strings.TrimSpace(text[1])
 	}
+	globalVersion.SubVersion = append(globalVersion.SubVersion, dto.SubVersionInfo{Name: "sysmgmt", Version: common.Version, BuildTime: common.BuildTime})
 
 	var version dto.SubVersionInfo
 	microservicelist := config.Conf.MicroServiceList
 	for _, microservice := range microservicelist {
-		resp, err := http.Get("http://localhost:" + string(microservice.Port) + "/api/v1/version")
-		if err != nil || resp.StatusCode != 200 {
+		url := "http://localhost:" + strconv.FormatInt(int64(microservice.Port), 10) + "/api/v1/version"
+		resp, err := http.Get(url)
+		if err == nil {
+			defer resp.Body.Close()
+		} else {
+			common.Log.Errorf("%s Get failed: %v", url, err)
 			continue
 		}
-		defer resp.Body.Close()
+		if resp.StatusCode != 200 {
+			common.Log.Errorf("%s Get failed: code:%d", url, resp.StatusCode)
+			continue
+		}
 		body, _ := ioutil.ReadAll(resp.Body)
 		str := string(body)
+		common.Log.Debugf("%s Get: %s", url, str)
 		strArry := strings.Split(str, " ")
 		version.Name = microservice.Name
 		version.Version = strArry[0]
