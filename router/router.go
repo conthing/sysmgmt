@@ -24,6 +24,10 @@ func Service(cnf config.Config) {
 		v1.GET("/time", handlers.GetTimeInfo)               // ✅
 		v1.PUT("/reboot", handlers.Reboot)                  // ✅
 		v1.POST("/update/file-upload", handlers.FileUpload) // ✅
+
+		// 别名设置
+		v1.GET("/alias", handlers.GetAlias)
+		v1.POST("/alias", handlers.SetAlias)
 	}
 	router.Run(fmt.Sprintf(":%d", cnf.Port))
 }
