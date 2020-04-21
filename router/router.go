@@ -28,6 +28,9 @@ func Service(cnf config.Config) {
 		// 别名设置
 		v1.GET("/alias", handlers.GetAlias)
 		v1.POST("/alias", handlers.SetAlias)
+		// 地区设置
+		v1.GET("/region", handlers.GetRegion)
+		v1.POST("/region", handlers.SetRegion)
 	}
 	router.Run(fmt.Sprintf(":%d", cnf.Port))
 }

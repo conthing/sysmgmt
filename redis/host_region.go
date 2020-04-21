@@ -5,24 +5,24 @@ import (
 	"github.com/mediocregopher/radix/v3"
 )
 
-// SaveAlias 保存别名
-func SaveAlias(alias string) error {
-	key := "alias"
+// SaveRegion 保存地区
+func SaveRegion(alias string) error {
+	key := "region"
 	err := Client.Do(radix.Cmd(nil, "SET", key, alias))
 	if err != nil {
-		common.Log.Error("SaveAlias ERR: ", err)
+		common.Log.Error("SaveRegion ERR: ", err)
 		return err
 	}
 	return nil
 }
 
-// GetAlias 获取别名
-func GetAlias() (string, error) {
-	key := "alias"
+// GetRegion 获取地区
+func GetRegion() (string, error) {
+	key := "region"
 	var alias string
 	err := Client.Do(radix.Cmd(&alias, "GET", key))
 	if err != nil {
-		common.Log.Error("SaveAlias ERR: ", err)
+		common.Log.Error("SaveRegion ERR: ", err)
 		return alias, err
 	}
 	return alias, nil
