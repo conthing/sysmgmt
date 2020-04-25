@@ -18,6 +18,15 @@ type Config struct {
 	ShellPath        string
 	MDNS             MDNS
 	MicroServiceList []MicroService
+	Recovery         StRecovery
+}
+
+type StRecovery struct {
+	Contains    string
+	Command     string
+	Parameter   []string
+	Environment []string
+	OutputFile  string
 }
 
 // 健康检查有失败的，status灯就闪烁，全部健康则常亮

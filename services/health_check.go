@@ -3,6 +3,9 @@ package services
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"os/exec"
+	"strings"
 	"sysmgmt-next/config"
 	"time"
 
@@ -68,10 +71,46 @@ func CtrlLED() {
 	_ = setLed(constLedLink, ledStatus) // ignore return error
 }
 
+func Recovery() {
+	command := exec.Command("ps", "-a")
+	out, err := command.Output()
+	if err != nil {
+		common.Log.Errorf("exec ps failed: %v", err)
+		return
+	}
+	str := string(out)
+	if !strings.Contains(str, config.Conf.Recovery.Contains) { //"lpr -d"
+		common.Log.Errorf("recovery check: %s is not exist, restart...", config.Conf.Recovery.Contains)
+		go Restart()
+	} else {
+		common.Log.Debugf("recovery check: %s is exist", config.Conf.Recovery.Contains)
+	}
+}
+
+func Restart() {
+	common.Log.Debugf("exec %v para:%v env:%v > %v", config.Conf.Recovery.Command, config.Conf.Recovery.Parameter, config.Conf.Recovery.Environment, config.Conf.Recovery.OutputFile)
+	command := exec.Command(config.Conf.Recovery.Command, config.Conf.Recovery.Parameter...)                    //"/app/zap/lpr/lpr", "-d", "/app/log/lpr", "-c", "/app/zap/lpr"
+	command.Env = append(os.Environ(), config.Conf.Recovery.Environment...)                                     //LD_LIBRARY_PATH=/app/zap/lpr
+	f, err := os.OpenFile(config.Conf.Recovery.OutputFile, os.O_WRONLY|os.O_CREATE|os.O_SYNC|os.O_APPEND, 0755) // "/app/log/conthing-lpr.log"
+	if err != nil {
+		common.Log.Errorf("open %s failed: %v", config.Conf.Recovery.OutputFile, err)
+	} else {
+		command.Stderr = f
+		command.Stdout = f
+	}
+
+	err = command.Run()
+	if err != nil {
+		common.Log.Errorf("%s restart failed: %v", config.Conf.Recovery.Contains, err)
+		return
+	}
+}
+
 // ScheduledHealthCheck 定时轮询任务
 func ScheduledHealthCheck() {
 	go func() {
 		for {
+			common.Log.Debug("health check...")
 			CtrlLED()
 			err := HealthCheck()
 			if err != nil {
@@ -80,6 +119,8 @@ func ScheduledHealthCheck() {
 			} else {
 				_ = setLed(constLedStatus, constLedOn) // ignore return error
 			}
+			Recovery()
+
 			time.Sleep(30 * time.Second)
 		}
 	}()

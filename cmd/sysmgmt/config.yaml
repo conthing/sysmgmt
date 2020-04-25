@@ -1,6 +1,8 @@
 controlled:
-  urlforwwwled: {"http://localhost:52018/api/v1/status"}
-  urlforlinkled: {"http://localhost:52032/api/v1/status"}
+  urlforlinkled: 
+    - "http://localhost:52018/api/v1/status"
+  urlforlinkled: 
+    - "http://localhost:52032/api/v1/status"
 port: 52035
 shellpath: /app/sysmgmt/res/
 mdns:
@@ -13,3 +15,15 @@ microservicelist:
   - name: exportmqtt
     port: 52018
     enablehealth: true
+recovery:
+  contains: "lpr"
+  command: "/app/zap/lpr/lpr"
+  parameter:
+    - "-d"
+    - "/app/log/lpr"
+    - "-c"
+    - "/app/zap/lpr"
+  environment:
+    - "LD_LIBRARY_PATH=/app/zap/lpr"
+  outputfile: "/app/log/conthing-lpr.log"
+    
