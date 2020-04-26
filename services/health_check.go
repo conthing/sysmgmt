@@ -72,7 +72,7 @@ func CtrlLED() {
 }
 
 func Recovery() {
-	command := exec.Command("ps", "-a")
+	command := exec.Command("ps", "-ef")
 	out, err := command.Output()
 	if err != nil {
 		common.Log.Errorf("exec ps failed: %v", err)
