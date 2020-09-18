@@ -2,7 +2,6 @@ package main
 
 import (
 	"sysmgmt-next/config"
-	"sysmgmt-next/redis"
 	"sysmgmt-next/router"
 	"sysmgmt-next/services"
 	"time"
@@ -17,7 +16,6 @@ func main() {
 	}
 	common.Log.Infof("config: %v", config.Conf)
 
-	redis.Connect()
 	services.MDNS(config.Conf.MDNS)
 
 	// WatchDog()

@@ -29,8 +29,8 @@ func Service(cnf config.Config) {
 		v1.GET("/alias", handlers.GetAlias)
 		v1.POST("/alias", handlers.SetAlias)
 		// 地区设置
-		v1.GET("/region", handlers.GetRegion)
-		v1.POST("/region", handlers.SetRegion)
+		v1.GET("/location", handlers.GetLocation)
+		v1.POST("/location", handlers.SetLocation)
 	}
 	router.Run(fmt.Sprintf(":%d", cnf.Port))
 }
