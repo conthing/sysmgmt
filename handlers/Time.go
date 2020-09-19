@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"os/exec"
 	"strings"
-	"sysmgmt-next/config"
-	"sysmgmt-next/dto"
+	"github.com/conthing/sysmgmt/config"
+	"github.com/conthing/sysmgmt/dto"
 	"time"
 
 	"github.com/conthing/utils/common"

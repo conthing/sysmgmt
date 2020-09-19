@@ -1,4 +1,4 @@
-module sysmgmt-next
+module github.com/conthing/sysmgmt
 
 go 1.14
 

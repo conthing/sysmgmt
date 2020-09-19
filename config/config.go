@@ -1,24 +1,25 @@
 package config
 
-import (
-	"bytes"
-	"fmt"
-	"io/ioutil"
-	"os"
-
-	"gopkg.in/yaml.v2"
-)
-
-const file = "config.yaml"
-
 // Config 配置文件结构
 type Config struct {
 	ControlLed       StLedControl
-	Port             int
+	HTTP             HTTPConfig
 	ShellPath        string
-	MDNS             MDNS
+	MainInterface    string
+	MDNS             MDNSConfig
 	MicroServiceList []MicroService
 	Recovery         StRecovery
+}
+
+type HTTPConfig struct {
+	Port int
+}
+
+// 发现服务配置
+type MDNSConfig struct {
+	Enable bool
+	Name   string
+	Port   int
 }
 
 type StRecovery struct {
@@ -45,60 +46,4 @@ type MicroService struct {
 	EnableHealth bool
 }
 
-// MDNS 发现服务
-type MDNS struct {
-	Name string
-	Port int
-}
-
 var Conf = &Config{}
-
-//Service 配置初始化服务
-func Service() error {
-	var err error
-	if !exists(file) {
-		err = createConfigFile()
-		if err != nil {
-			return fmt.Errorf("create file failed %v", err)
-		}
-	}
-	yamlFile, err := ioutil.ReadFile(file)
-	if err != nil {
-		return fmt.Errorf("ReadFile failed %v", err)
-	}
-
-	err = yaml.Unmarshal(yamlFile, &Conf)
-	if err != nil {
-		return fmt.Errorf("Unmarshal failed %v", err)
-	}
-	return nil
-}
-
-// exists 判断所给路径文件/文件夹是否存在
-func exists(path string) bool {
-	_, err := os.Stat(path) //os.Stat获取文件信息
-	if err != nil {
-		return os.IsExist(err)
-	}
-	return true
-}
-
-func createConfigFile() error {
-	buf := new(bytes.Buffer)
-	err := yaml.NewEncoder(buf).Encode(Conf)
-	if err != nil {
-		return fmt.Errorf("Encode config file failed %v", err)
-	}
-
-	f, err := os.Create(file)
-	if err != nil {
-		return fmt.Errorf("Create config file failed %v", err)
-	}
-	defer f.Close()
-
-	_, err = f.Write(buf.Bytes())
-	if err != nil {
-		return fmt.Errorf("Write config file failed %v", err)
-	}
-	return nil
-}

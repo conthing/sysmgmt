@@ -1,7 +1,9 @@
 package services
 
 import (
-	"sysmgmt-next/config"
+	"fmt"
+
+	"github.com/conthing/sysmgmt/config"
 
 	"github.com/conthing/utils/common"
 	"github.com/grandcat/zeroconf"
@@ -9,17 +11,24 @@ import (
 
 var server *zeroconf.Server
 
-// MDNS 服务
-func MDNS(cnf config.MDNS) {
-	var err error
-	server, err = zeroconf.Register(cnf.Name, "_workstation._tcp", "local.", cnf.Port, []string{"txtv=0", "lo=1", "la=2"}, nil)
-	if err != nil {
-		common.Log.Errorf("MDNS start failed: %v", err)
+// StartMDNS 开启MDNS服务
+func StartMDNS(cnf *config.MDNSConfig) error {
+	if cnf.Enable {
+		var err error
+		server, err = zeroconf.Register(cnf.Name, "_workstation._tcp", "local.", cnf.Port, []string{"txtv=0", "lo=1", "la=2"}, nil)
+		if err != nil {
+			common.Log.Errorf("MDNS start failed: %v", err)
+			return fmt.Errorf("MDNS start failed: %w", err)
+		}
+		common.Log.Infof("MDNS start on %d", cnf.Port)
 	}
-	common.Log.Infof("MDNS start on %d", cnf.Port)
+	return nil
 }
 
-// StopMDNS 关闭MDNS
+// StopMDNS 关闭MDNS服务
 func StopMDNS() {
-	server.Shutdown()
+	if server != nil {
+		common.Log.Infof("MDNS shuting down")
+		server.Shutdown()
+	}
 }

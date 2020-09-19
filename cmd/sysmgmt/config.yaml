@@ -3,9 +3,11 @@ controlled:
     - "http://localhost:52018/api/v1/status"
   urlforlinkled: 
     - "http://localhost:52032/api/v1/status"
-port: 52035
+http:
+  port: 52035
 shellpath: /app/sysmgmt/res/
 mdns:
+  enable: true
   name: conthing-lpr
   port: 42424
 microservicelist:

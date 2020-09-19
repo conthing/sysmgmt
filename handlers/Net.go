@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os/exec"
 	"strings"
-	"sysmgmt-next/dto"
+	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/conthing/utils/common"
 	"github.com/gin-gonic/gin"

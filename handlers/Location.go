@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"sysmgmt-next/dto"
+	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/gin-gonic/gin"
 )

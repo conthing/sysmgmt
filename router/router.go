@@ -2,18 +2,18 @@ package router
 
 import (
 	"fmt"
-	"sysmgmt-next/config"
-	"sysmgmt-next/handlers"
+	"github.com/conthing/sysmgmt/config"
+	"github.com/conthing/sysmgmt/handlers"
 
 	"github.com/gin-gonic/gin"
 )
 
 // Service 启动路由
-func Service(cnf config.Config) {
-	router := gin.New()
-	router.Use(gin.Recovery())
-	router.Use(gin.Logger())
-	v1 := router.Group("/api/v1")
+func Service(cnf *config.HTTPConfig) {
+	r := gin.New()
+	r.Use(gin.Recovery())
+	r.Use(gin.Logger())
+	v1 := r.Group("/api/v1")
 	{
 		v1.GET("/ping", handlers.Ping)      // ✅
 		v1.GET("/sn", handlers.GetMac)      // ✅
@@ -32,5 +32,5 @@ func Service(cnf config.Config) {
 		v1.GET("/location", handlers.GetLocation)
 		v1.POST("/location", handlers.SetLocation)
 	}
-	router.Run(fmt.Sprintf(":%d", cnf.Port))
+	r.Run(fmt.Sprintf(":%d", cnf.Port))
 }

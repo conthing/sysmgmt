@@ -1,3 +1,3 @@
-# sysmgmt-next 
+# sysmgmt 
 
-原 sysmgmt 的重构版
+通用系统管理服务

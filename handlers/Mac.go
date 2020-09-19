@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"sysmgmt-next/dto"
+	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/conthing/utils/common"
 	"github.com/gin-gonic/gin"
