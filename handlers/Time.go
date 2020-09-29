@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"os/exec"
 	"strings"
+	"time"
+
 	"github.com/conthing/sysmgmt/config"
 	"github.com/conthing/sysmgmt/dto"
-	"time"
 
 	"github.com/conthing/utils/common"
 	"github.com/gin-gonic/gin"
@@ -36,23 +37,33 @@ func GetTimeInfo(c *gin.Context) {
 	} else {
 		timeInfo.Ntpstatus = false
 	}
-	c.JSON(200, timeInfo)
+	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
+		Data: timeInfo,
+	})
 }
 
 // PutTime 修改时间
 func PutTime(c *gin.Context) {
 	var info dto.NTPInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, dto.Resp{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	if info.URL == "" {
-		info.URL = NTPServerURL
+		info.URL = NTPServerURL //todo 这个服务器地址要存储，供get的时候获取
 	}
 	shellPath := config.Conf.ShellPath + "modifiedTime.sh"
 	time := time.Unix(info.Date, 0)
 	command := exec.Command(shellPath, info.Type, time.Format("2006-01-02 15:04:05"), info.URL)
 	out, err := command.Output()
 	common.Log.Debugf("timedatectl output:%s,err:%v", string(out), err)
+
+	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
+	})
 }

@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
 	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,7 @@ func GetLocation(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
 		Data: locationBody{Location: location},
 	})
 }
@@ -38,6 +40,7 @@ func SetLocation(c *gin.Context) {
 	err := c.ShouldBindJSON(&info)
 	if err != nil || info.Location == "" {
 		c.JSON(http.StatusBadRequest, dto.Resp{
+			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
 		return
@@ -46,12 +49,14 @@ func SetLocation(c *gin.Context) {
 	err = ioutil.WriteFile("../data/.location", []byte(info.Location), 0666)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.Resp{
+			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
 		Data: locationBody{Location: info.Location},
 	})
 }

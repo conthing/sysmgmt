@@ -17,10 +17,17 @@ func GetNetInfo(c *gin.Context) {
 	var info dto.NetInfo
 	err := getCurrentNetInfo(&info)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, dto.Resp{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
-	c.JSON(http.StatusOK, info)
+
+	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
+		Data: info,
+	})
 }
 
 const networkSettingFile = "/etc/network/interfaces"
@@ -91,13 +98,22 @@ func getCurrentNetInfo(info *dto.NetInfo) error {
 func PutNet(c *gin.Context) {
 	var info dto.NetInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, dto.Resp{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
 	if err := setNetInfo(&info); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, dto.Resp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
+	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
+	})
 }
 
 func setNetInfo(info *dto.NetInfo) error {

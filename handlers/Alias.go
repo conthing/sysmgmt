@@ -24,6 +24,7 @@ func GetAlias(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
 		Data: aliasBody{Alias: alias},
 	})
 }
@@ -38,6 +39,7 @@ func SetAlias(c *gin.Context) {
 	err := c.ShouldBindJSON(&info)
 	if err != nil || info.Alias == "" {
 		c.JSON(http.StatusBadRequest, dto.Resp{
+			Code: http.StatusBadRequest,
 			Message: err.Error(),
 		})
 		return
@@ -46,12 +48,14 @@ func SetAlias(c *gin.Context) {
 	err = ioutil.WriteFile("../data/.alias", []byte(info.Alias), 0666)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.Resp{
+			Code: http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
 		Data: aliasBody{Alias: info.Alias},
 	})
 }

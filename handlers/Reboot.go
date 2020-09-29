@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"net/http"
 	"os/exec"
 
+	"github.com/conthing/sysmgmt/dto"
 	"github.com/conthing/utils/common"
 	"github.com/gin-gonic/gin"
 )
@@ -17,5 +19,8 @@ func Reboot(c *gin.Context) {
 		return
 	}
 	common.Log.Debug(string(data))
-	c.String(200, "OK")
+
+	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
+	})
 }

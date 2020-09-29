@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/conthing/utils/common"
@@ -11,5 +13,9 @@ import (
 func GetMac(c *gin.Context) {
 	var resp dto.MacInfo
 	resp.Mac = common.GetSerialNumber()
-	c.JSON(200, resp)
+
+	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
+		Data: resp,
+	})
 }
