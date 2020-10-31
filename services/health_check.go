@@ -8,9 +8,10 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
+
 	"github.com/conthing/sysmgmt/config"
 	"github.com/conthing/sysmgmt/dto"
-	"time"
 
 	"github.com/conthing/utils/common"
 )
@@ -47,11 +48,11 @@ func GetAllVersion() (globalVersion dto.VersionInfo) {
 		body, _ := ioutil.ReadAll(resp.Body)
 		str := string(body)
 		common.Log.Debugf("%s Get: %s", url, str)
-		strArry := strings.Split(str, " ")
+		strArry := strings.SplitAfterN(str, " ", 2)
 		version.Name = microservice.Name
-		if len(strArry) >= 3 {
+		if len(strArry) > 1 {
 			version.Version = strArry[0]
-			version.BuildTime = strArry[1] + " " + strArry[2]
+			version.BuildTime = strArry[1]
 			globalVersion.SubVersion = append(globalVersion.SubVersion, version)
 		} else {
 			version.Version = "unknown"
