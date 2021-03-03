@@ -6,10 +6,11 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
+
 	"github.com/conthing/sysmgmt/config"
 	"github.com/conthing/sysmgmt/router"
 	"github.com/conthing/sysmgmt/services"
-	"time"
 
 	"github.com/conthing/utils/common"
 )
@@ -60,6 +61,7 @@ func main() {
 	services.ScheduledHealthCheck()
 	go router.Service(&config.Conf.HTTP)
 
+	listenForEvents(errs)
 	listenForInterrupt(errs)
 
 	// recv error channel
@@ -77,6 +79,12 @@ func listenForInterrupt(errChan chan error) {
 		c := make(chan os.Signal)
 		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 		errChan <- fmt.Errorf("%s", <-c)
+	}()
+}
+
+func listenForEvents(errChan chan error) {
+	go func() {
+		errChan <- services.ButtonSevcie()
 	}()
 }
 

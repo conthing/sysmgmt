@@ -157,22 +157,49 @@ func Restart() {
 	}
 }
 
+var resetToDefaultEventChannel = make(chan int)
+
 // ScheduledHealthCheck 定时轮询任务
 func ScheduledHealthCheck() {
 	go func() {
+		rst := 0
 		for {
-			common.Log.Debug("health check...")
-			CtrlLED()
-			err := HealthCheck()
-			if err != nil {
-				_ = setLed(constLedStatus, constLedFlash) // ignore return error
-				//common.Log.Error(err)
-			} else {
-				_ = setLed(constLedStatus, constLedOn) // ignore return error
-			}
-			Recovery()
 
-			time.Sleep(30 * time.Second)
+			select {
+			case <-time.After(time.Second * 30):
+
+			case rst = <-resetToDefaultEventChannel:
+				if rst == 1 { // 恢复出厂按钮按下
+					_ = setLed(constLedStatus, constLedOff)
+					_ = setLed(constLedLink, constLedOff)
+					_ = setLed(constLedWWW, constLedOff)
+				} else if rst == 2 { // 恢复出厂按钮按下后10秒
+					_ = setLed(constLedStatus, constLedFlash)
+					_ = setLed(constLedLink, constLedFlash)
+					_ = setLed(constLedWWW, constLedFlash)
+					exec.Command("rm", "-rf", "/app/data").Output() //复位
+					time.Sleep(3 * time.Second)
+					exec.Command("reboot").Output() //复位
+				} else { // 恢复出厂按钮松开
+					rst = 0
+				}
+			}
+
+			if rst == 0 {
+				common.Log.Debug("health check...")
+				CtrlLED()
+				err := HealthCheck()
+				if err != nil {
+					_ = setLed(constLedStatus, constLedFlash) // ignore return error
+					//common.Log.Error(err)
+				} else {
+					_ = setLed(constLedStatus, constLedOn) // ignore return error
+				}
+				Recovery()
+			} else {
+				common.Log.Debug("health check bypassed...")
+			}
+
 		}
 	}()
 }
