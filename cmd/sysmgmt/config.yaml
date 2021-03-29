@@ -1,5 +1,5 @@
 controlled:
-  urlforlinkled: 
+  urlforwwwled: 
     - "http://localhost:52018/api/v1/status"
   urlforlinkled: 
     - "http://localhost:52032/api/v1/status"
