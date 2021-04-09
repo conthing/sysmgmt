@@ -16,7 +16,7 @@ func FileUpload(c *gin.Context) {
 	file, err := c.FormFile("file.zip")
 	if err != nil {
 		common.Log.Errorf("Form file failed %v", err)
-		c.JSON(http.StatusBadRequest, dto.Resp{
+		c.JSON(http.StatusOK, dto.Resp{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -26,7 +26,7 @@ func FileUpload(c *gin.Context) {
 	err = c.SaveUploadedFile(file, "/tmp/file.zip")
 	if err != nil {
 		common.Log.Errorf("Save file failed %v", err)
-		c.JSON(http.StatusBadRequest, dto.Resp{
+		c.JSON(http.StatusOK, dto.Resp{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -36,7 +36,7 @@ func FileUpload(c *gin.Context) {
 	err = services.UpdateService()
 	if err != nil {
 		common.Log.Errorf("Update failed %v", err)
-		c.JSON(http.StatusBadRequest, dto.Resp{
+		c.JSON(http.StatusOK, dto.Resp{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})

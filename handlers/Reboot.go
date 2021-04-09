@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"os/exec"
+	"time"
 
 	"github.com/conthing/sysmgmt/dto"
 	"github.com/conthing/utils/common"
@@ -12,15 +13,21 @@ import (
 // Reboot 重启
 func Reboot(c *gin.Context) {
 
-	data, err := exec.Command("bash", "-c", "reboot -f").Output() //初始化Cmd
-	if err != nil {
-		common.Log.Error(err)
-		c.String(400, "关机失败", err)
-		return
-	}
-	common.Log.Debug(string(data))
+	waitThenReboot()
 
 	c.JSON(http.StatusOK, dto.Resp{
 		Code: http.StatusOK,
+		Data: "reboot in 3 seconds.",
 	})
+}
+
+func waitThenReboot() {
+	go func() {
+		time.Sleep(time.Second * 3)
+		_, err := exec.Command("reboot", "-f").Output() //初始化Cmd
+		//_, err := exec.Command("bash", "-c", "reboot -f").Output() //初始化Cmd
+		if err != nil {
+			common.Log.Errorf("reboot failed: %v", err)
+		}
+	}()
 }

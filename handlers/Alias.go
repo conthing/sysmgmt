@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
 	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/gin-gonic/gin"
@@ -38,8 +39,8 @@ func SetAlias(c *gin.Context) {
 	var info aliasBody
 	err := c.ShouldBindJSON(&info)
 	if err != nil || info.Alias == "" {
-		c.JSON(http.StatusBadRequest, dto.Resp{
-			Code: http.StatusBadRequest,
+		c.JSON(http.StatusOK, dto.Resp{
+			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
 		return
@@ -47,8 +48,8 @@ func SetAlias(c *gin.Context) {
 
 	err = ioutil.WriteFile("../data/.alias", []byte(info.Alias), 0666)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, dto.Resp{
-			Code: http.StatusInternalServerError,
+		c.JSON(http.StatusOK, dto.Resp{
+			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return

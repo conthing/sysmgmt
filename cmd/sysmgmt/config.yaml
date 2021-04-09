@@ -21,10 +21,8 @@ recovery:
   contains: "lpr"
   command: "/app/zap/lpr/lpr"
   parameter:
-    - "-d"
-    - "/app/log/lpr"
     - "-c"
-    - "/app/zap/lpr"
+    - "/app/zap/lpr/config.yaml"
   environment:
     - "LD_LIBRARY_PATH=/app/zap/lpr"
   outputfile: "/app/log/conthing-lpr.log"

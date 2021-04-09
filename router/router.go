@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+
 	"github.com/conthing/sysmgmt/config"
 	"github.com/conthing/sysmgmt/handlers"
 
@@ -31,6 +32,8 @@ func Service(cnf *config.HTTPConfig) {
 		// 地区设置
 		v1.GET("/location", handlers.GetLocation)
 		v1.POST("/location", handlers.SetLocation)
+		v1.GET("/region", handlers.GetRegion)
+		v1.POST("/region", handlers.SetRegion)
 	}
 	r.Run(fmt.Sprintf(":%d", cnf.Port))
 }

@@ -47,7 +47,7 @@ func GetTimeInfo(c *gin.Context) {
 func PutTime(c *gin.Context) {
 	var info dto.NTPInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, dto.Resp{
+		c.JSON(http.StatusOK, dto.Resp{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -65,5 +65,6 @@ func PutTime(c *gin.Context) {
 
 	c.JSON(http.StatusOK, dto.Resp{
 		Code: http.StatusOK,
+		Data: info,
 	})
 }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os/exec"
 	"strings"
+
 	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/conthing/utils/common"
@@ -17,7 +18,7 @@ func GetNetInfo(c *gin.Context) {
 	var info dto.NetInfo
 	err := getCurrentNetInfo(&info)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, dto.Resp{
+		c.JSON(http.StatusOK, dto.Resp{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -98,14 +99,14 @@ func getCurrentNetInfo(info *dto.NetInfo) error {
 func PutNet(c *gin.Context) {
 	var info dto.NetInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, dto.Resp{
+		c.JSON(http.StatusOK, dto.Resp{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
 		return
 	}
 	if err := setNetInfo(&info); err != nil {
-		c.JSON(http.StatusInternalServerError, dto.Resp{
+		c.JSON(http.StatusOK, dto.Resp{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
@@ -113,6 +114,7 @@ func PutNet(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, dto.Resp{
 		Code: http.StatusOK,
+		Data: info,
 	})
 }
 
