@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/conthing/sysmgmt/config"
-	"github.com/conthing/sysmgmt/router"
+	"github.com/conthing/sysmgmt/handlers"
 	"github.com/conthing/sysmgmt/services"
 
 	"github.com/conthing/utils/common"
@@ -59,7 +59,7 @@ func main() {
 	// WatchDog()
 
 	services.ScheduledHealthCheck()
-	go router.Service(&config.Conf.HTTP)
+	go handlers.Run(&config.Conf.HTTP)
 
 	listenForEvents(errs)
 	listenForInterrupt(errs)
