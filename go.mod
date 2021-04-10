@@ -1,6 +1,6 @@
 module github.com/conthing/sysmgmt
 
-go 1.14
+go 1.15
 
 require (
 	github.com/conthing/utils v0.0.0-20200918160522-30e06d830990
