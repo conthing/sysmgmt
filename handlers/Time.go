@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/conthing/sysmgmt/config"
 	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/conthing/utils/common"
@@ -57,9 +56,8 @@ func PutTime(c *gin.Context) {
 	if info.URL == "" {
 		info.URL = NTPServerURL //todo 这个服务器地址要存储，供get的时候获取
 	}
-	shellPath := config.Conf.ShellPath + "modifiedTime.sh"
 	time := time.Unix(info.Date, 0)
-	command := exec.Command(shellPath, info.Type, time.Format("2006-01-02 15:04:05"), info.URL)
+	command := exec.Command("ModifyTime.sh", info.Type, time.Format("2006-01-02 15:04:05"), info.URL)
 	out, err := command.Output()
 	common.Log.Debugf("timedatectl output:%s,err:%v", string(out), err)
 

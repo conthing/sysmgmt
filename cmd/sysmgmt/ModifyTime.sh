@@ -1,19 +1,20 @@
 #!/bin/bash
-echo "OK"
+echo "ModifyTime $1 $2 $3"
 ntptype=$1
 date=$2
 url=$3
-echo $ntptype
-echo $date
-echo $url
 if [ $ntptype = "ntp" ];then
-	echo 1
+	echo "timedatectl set-ntp true"
     timedatectl set-ntp true
+	echo "ntpdate $url"
     ntpdate $url
+	echo "hwclock -w"
     hwclock -w
 else
-	echo 2
+	echo "timedatectl set-ntp false"
     timedatectl set-ntp false
+	echo "date -s $date"
     date -s "$date"
+	echo "hwclock -w"
     hwclock -w
 fi

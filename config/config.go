@@ -6,7 +6,6 @@ import "github.com/conthing/sysmgmt/db"
 type Config struct {
 	ControlLed       StLedControl
 	HTTP             HTTPConfig
-	ShellPath        string
 	MainInterface    string
 	MDNS             MDNSConfig
 	MicroServiceList []MicroService
