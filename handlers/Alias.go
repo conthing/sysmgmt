@@ -1,24 +1,29 @@
 package handlers
 
 import (
-	"io/ioutil"
 	"net/http"
 	"strings"
 
+	"github.com/conthing/sysmgmt/db"
 	"github.com/conthing/sysmgmt/dto"
+	"github.com/conthing/sysmgmt/models"
 
 	"github.com/gin-gonic/gin"
 )
 
+type aliasBody struct {
+	Alias string `json:"alias"`
+}
+
 // GetAlias 获取名字
 func GetAlias(c *gin.Context) {
 	var alias string
-
-	out, err := ioutil.ReadFile("../data/.alias")
+	envior := models.Envior{Name: "alias"}
+	err := db.GetEnvior(&envior)
 	if err != nil {
 		alias = "Unknown"
 	} else {
-		alias = strings.TrimSpace(string(out))
+		alias = strings.TrimSpace(envior.Value)
 		if alias == "" {
 			alias = "Unknown"
 		}
@@ -28,10 +33,6 @@ func GetAlias(c *gin.Context) {
 		Code: http.StatusOK,
 		Data: aliasBody{Alias: alias},
 	})
-}
-
-type aliasBody struct {
-	Alias string `json:"alias"`
 }
 
 // SetAlias 设置名字
@@ -46,7 +47,8 @@ func SetAlias(c *gin.Context) {
 		return
 	}
 
-	err = ioutil.WriteFile("../data/.alias", []byte(info.Alias), 0666)
+	envior := models.Envior{Name: "alias", Value: strings.TrimSpace(info.Alias)}
+	err = db.SetEnvior(&envior)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.Resp{
 			Code:    http.StatusInternalServerError,

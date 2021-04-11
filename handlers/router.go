@@ -27,14 +27,16 @@ func Run(cnf *config.HTTPConfig) {
 	authGroup.Use(auth.GINGuard())
 	{
 		authGroup.POST("/user/logout", Logout)
-		authGroup.GET("/sn", GetMac)      // ✅
-		authGroup.PUT("/net", PutNet)     // ✅
-		authGroup.GET("/net", GetNetInfo) // ✅
+		authGroup.GET("/sn", GetMac)
+		authGroup.PUT("/net", PutNet)
+		authGroup.GET("/net", GetNetInfo)
 		authGroup.GET("/version", GetVersion)
-		authGroup.PUT("/time", PutTime)                   // ✅
-		authGroup.GET("/time", GetTimeInfo)               // ✅
-		authGroup.PUT("/reboot", Reboot)                  // ✅
-		authGroup.POST("/update/file-upload", FileUpload) // ✅
+		authGroup.PUT("/time", PutTime)
+		authGroup.GET("/time", GetTimeInfo)
+		authGroup.PUT("/reboot", Reboot)
+		authGroup.POST("/upgrade", Upgrade)
+		authGroup.POST("/export", Export)
+		authGroup.POST("/import", Import)
 
 		// 别名设置
 		authGroup.GET("/alias", GetAlias)
@@ -42,8 +44,6 @@ func Run(cnf *config.HTTPConfig) {
 		// 地区设置
 		authGroup.GET("/location", GetLocation)
 		authGroup.POST("/location", SetLocation)
-		authGroup.GET("/region", GetRegion)
-		authGroup.POST("/region", SetRegion)
 	}
 	r.Run(fmt.Sprintf(":%d", cnf.Port))
 }

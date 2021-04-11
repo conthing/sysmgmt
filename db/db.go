@@ -40,6 +40,7 @@ func Init(cfg *DBConfig) error {
 	}
 	dbClient.AutoMigrate(
 		&models.User{},
+		&models.Envior{},
 	)
 	return nil
 }

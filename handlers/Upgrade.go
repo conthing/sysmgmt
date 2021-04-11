@@ -11,8 +11,8 @@ import (
 )
 
 // todo 返回故障码混乱
-//FileUpload 文件上传
-func FileUpload(c *gin.Context) {
+//Upgrade 升级程序
+func Upgrade(c *gin.Context) {
 	file, err := c.FormFile("file.zip")
 	if err != nil {
 		common.Log.Errorf("Form file failed %v", err)
@@ -49,6 +49,56 @@ func FileUpload(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.Resp{
 		Code: http.StatusOK,
 		Data: resp,
+	})
+
+}
+
+//Import 导入设置
+func Import(c *gin.Context) {
+	file, err := c.FormFile("data.zip")
+	if err != nil {
+		common.Log.Errorf("Form file failed %v", err)
+		c.JSON(http.StatusOK, dto.Resp{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	err = c.SaveUploadedFile(file, "/tmp/data.zip")
+	if err != nil {
+		common.Log.Errorf("Save file failed %v", err)
+		c.JSON(http.StatusOK, dto.Resp{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	var resp dto.FileInfo
+	resp.Downloading = true
+
+	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
+		Data: resp,
+	})
+
+}
+
+// FileInfo 文件信息
+type ExportInfo struct {
+	URL string `json:"url"`
+}
+
+//Export 导出设置
+func Export(c *gin.Context) {
+
+	var resp dto.FileInfo
+	resp.Downloading = true
+
+	c.JSON(http.StatusOK, dto.Resp{
+		Code: http.StatusOK,
+		Data: ExportInfo{URL: "files/data.zip"},
 	})
 
 }

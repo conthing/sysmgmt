@@ -5,7 +5,6 @@ controlled:
     - "http://localhost:52032/api/v1/status"
 http:
   port: 52035
-shellpath: /app/sysmgmt/res/
 mdns:
   enable: true
   name: conthing-lpr
