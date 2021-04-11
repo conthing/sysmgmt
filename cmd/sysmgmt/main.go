@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/conthing/sysmgmt/config"
+	"github.com/conthing/sysmgmt/db"
 	"github.com/conthing/sysmgmt/handlers"
 	"github.com/conthing/sysmgmt/services"
 
@@ -38,6 +39,12 @@ func boot(_ interface{}) (needRetry bool, err error) {
 		}
 		common.Log.Infof("Set main interface %s success, IP: %s", config.Conf.MainInterface, common.GetMajorInterfaceIP())
 	}
+	// 数据库初始化
+	err = db.Init(&config.Conf.DB)
+	if err != nil {
+		return true, fmt.Errorf("Failed to init database: %w", err)
+	}
+	common.Log.Info("Init database success")
 
 	err = services.StartMDNS(&config.Conf.MDNS)
 	if err != nil {
@@ -84,7 +91,10 @@ func listenForInterrupt(errChan chan error) {
 
 func listenForEvents(errChan chan error) {
 	go func() {
-		errChan <- services.ButtonSevcie()
+		ret := services.ButtonSevcie()
+		if ret != nil {
+			errChan <- ret
+		}
 	}()
 }
 

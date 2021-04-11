@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -43,9 +44,9 @@ func ParseToken(tokenString string) (*userClaims, error) {
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ParseToken failed: %w", err)
 	}
 
 	claims := token.Claims.(*userClaims)
-	return claims, nil
+	return claims, token.Claims.Valid()
 }

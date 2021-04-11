@@ -26,4 +26,7 @@ recovery:
   environment:
     - "LD_LIBRARY_PATH=/app/zap/lpr"
   outputfile: "/app/log/conthing-lpr.log"
-    
+db:
+  location: "/app/data/"
+  dbname: "sysmgmt"
+   

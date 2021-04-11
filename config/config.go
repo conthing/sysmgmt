@@ -1,5 +1,7 @@
 package config
 
+import "github.com/conthing/sysmgmt/db"
+
 // Config 配置文件结构
 type Config struct {
 	ControlLed       StLedControl
@@ -9,6 +11,7 @@ type Config struct {
 	MDNS             MDNSConfig
 	MicroServiceList []MicroService
 	Recovery         StRecovery
+	DB               db.DBConfig
 }
 
 type HTTPConfig struct {

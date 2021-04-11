@@ -28,7 +28,7 @@ func GINGuard() gin.HandlerFunc {
 			common.Log.Errorf("ParseToken failed: %v", err)
 			c.JSON(http.StatusOK, dto.Resp{
 				Code:    http.StatusUnauthorized,
-				Message: "Invalid token",
+				Message: err.Error(),
 			})
 			c.Abort()
 			return
@@ -43,7 +43,7 @@ func GINGuard() gin.HandlerFunc {
 				common.Log.Errorf("db.GetUser %s failed: %v", claims.Username, err)
 				c.JSON(http.StatusOK, dto.Resp{
 					Code:    http.StatusUnauthorized,
-					Message: "Invalid token",
+					Message: "Invalid token random",
 				})
 				c.Abort()
 				return
@@ -55,7 +55,29 @@ func GINGuard() gin.HandlerFunc {
 			common.Log.Errorf("TokenRandom %d should be %d", claims.TokenRandom, tokenRandomMap[claims.Username])
 			c.JSON(http.StatusOK, dto.Resp{
 				Code:    http.StatusUnauthorized,
-				Message: "Invalid token",
+				Message: "Invalid token random",
+			})
+			c.Abort()
+			return
+		}
+
+		c.Set("username", claims.Username)
+		c.Next()
+	}
+}
+
+// GINGuard 权限验证守卫，供其他进程使用 todo 不能让旧的token失效
+func GINGuardExport() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 请求前
+		tokenString := c.Request.Header.Get("Authorization")
+		claims, err := ParseToken(tokenString)
+
+		if err != nil {
+			common.Log.Errorf("ParseToken failed: %v", err)
+			c.JSON(http.StatusOK, dto.Resp{
+				Code:    http.StatusUnauthorized,
+				Message: err.Error(),
 			})
 			c.Abort()
 			return

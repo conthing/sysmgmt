@@ -69,7 +69,7 @@ func HealthCheck() error {
 	successservicename := ""
 	microservicelist := config.Conf.MicroServiceList
 	for _, microservice := range microservicelist {
-		common.Log.Debugf("ms: %v", microservice)
+		common.Log.Debugf("%v port :%d", microservice.Name, microservice.Port)
 		if microservice.EnableHealth {
 			url := fmt.Sprintf("http://localhost:%d/api/v1/ping", microservice.Port)
 			resp, err := http.Get(url)
