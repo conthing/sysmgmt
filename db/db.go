@@ -18,6 +18,11 @@ type DBConfig struct {
 	DBName   string
 }
 
+type Envior struct {
+	Name  string `gorm:"uniqueindex;<-:create;not null"`
+	Value string
+}
+
 var dbClient *gorm.DB
 
 // Init connect and migrate
@@ -34,13 +39,14 @@ func Init(cfg *DBConfig) error {
 	//	DontSupportRenameColumn:   true,  // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
 	//	SkipInitializeWithVersion: false, // 根据当前 MySQL 版本自动配置
 	//}), &gorm.Config{})
-	dbClient, err = gorm.Open(sqlite.Open(cfg.Location+cfg.DBName+".sqlite3"), &gorm.Config{})
+	dbClient, err = gorm.Open(sqlite.Open(cfg.Location+cfg.DBName+".db3"), &gorm.Config{})
 	if err != nil {
 		return fmt.Errorf("db connect failed: %v", err)
 	}
+
 	dbClient.AutoMigrate(
+		&Envior{},
 		&models.User{},
-		&models.Envior{},
 	)
 	return nil
 }

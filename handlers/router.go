@@ -38,6 +38,10 @@ func Run(cnf *config.HTTPConfig) {
 		authGroup.POST("/export", Export)
 		authGroup.POST("/import", Import)
 
+		authGroup.GET("/envior", GetEnviorList)
+		authGroup.GET("/envior/:name", GetEnvior)
+		authGroup.POST("/envior", SetEnvior)
+
 		// 别名设置
 		authGroup.GET("/alias", GetAlias)
 		authGroup.POST("/alias", SetAlias)

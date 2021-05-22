@@ -10,7 +10,7 @@ import (
 var verifyKey = []byte("conthing")
 
 // ExpireTime 过期时间会换算成秒
-const ExpireTime = 3600
+const ExpireTime = 86400
 
 type userClaims struct {
 	Username    string `json:"username"`

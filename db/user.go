@@ -51,11 +51,7 @@ func AddUser(obj *models.User) error {
 
 // DeleteUser
 func DeleteUser(obj *models.User) error {
-	err := getUserEntry(obj).First(obj).Error
-	if err != nil {
-		return fmt.Errorf("Couldn't find deleting User in database: %w", err)
-	}
-	err = dbClient.Delete(obj).Error
+	err := getUserEntry(obj).First(obj).Unscoped().Delete(obj).Error
 	if err != nil {
 		return fmt.Errorf("dbClient.Delete User failed:%w", err)
 	}

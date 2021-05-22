@@ -15,6 +15,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// todo 不同主机token可以通用bug，token时间放长一点
+
 type LoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
