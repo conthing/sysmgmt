@@ -79,7 +79,7 @@ func ButtonProcess(event *InputEvent) {
 					common.Log.Debugf("reset button holdtime canceled")
 				}
 
-				buttonEventChannel <- 0
+				buttonEventChannel <- 3
 			} else { // 按下
 				buttonEventChannel <- 1
 				resetButtonHoldTimer = time.AfterFunc(10*time.Second, func() {
@@ -94,7 +94,7 @@ func ButtonProcess(event *InputEvent) {
 					common.Log.Debugf("function button holdtime canceled")
 				}
 
-				buttonEventChannel <- 10
+				buttonEventChannel <- 13
 			} else { // 按下
 				buttonEventChannel <- 11
 				functionButtonHoldTimer = time.AfterFunc(5*time.Second, func() {

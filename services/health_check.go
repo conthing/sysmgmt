@@ -167,7 +167,11 @@ func Restart() {
 	}
 }
 
-var buttonEventChannel = make(chan int) // 0-恢复出厂按钮松开 1-恢复出厂按钮按下 2-恢复出厂按钮按下后10秒 10-function按钮松开 11-function按钮按下 12-function按钮按下后5秒
+var buttonEventChannel = make(chan int) // 0-其他触发led变化的事件 3-恢复出厂按钮松开 1-恢复出厂按钮按下 2-恢复出厂按钮按下后10秒 13-function按钮松开 11-function按钮按下 12-function按钮按下后5秒
+
+func NotifyLed() {
+	buttonEventChannel <- 0 // 指示灯要变化
+}
 
 // ScheduledHealthCheck 定时轮询任务
 func ScheduledHealthCheck() {
@@ -178,15 +182,14 @@ func ScheduledHealthCheck() {
 			select {
 			case <-time.After(time.Second * 30):
 			case rst := <-buttonEventChannel:
-				if rst == 0 { // 恢复出厂按钮松开
-					bypass = false
+				if rst == 0 { // 其他触发led变化的事件
 				} else if rst == 1 { // 恢复出厂按钮按下
 					bypass = true
 					_ = setLed(constLedStatus, constLedOff)
 					_ = setLed(constLedLink, constLedOff)
 					_ = setLed(constLedWWW, constLedOff)
 				} else if rst == 2 { // 恢复出厂按钮按下后10秒
-					bypass = true
+					bypass = false
 					_ = setLed(constLedStatus, constLedFlash)
 					_ = setLed(constLedLink, constLedFlash)
 					_ = setLed(constLedWWW, constLedFlash)
@@ -194,18 +197,19 @@ func ScheduledHealthCheck() {
 					exec.Command("rm", "-rf", "/app/data").Output() //复位
 					time.Sleep(3 * time.Second)
 					exec.Command("reboot").Output() //复位
-				} else if rst == 10 { // function按钮松开
+				} else if rst == 3 { // 恢复出厂按钮松开
 					bypass = false
 				} else if rst == 11 { // function按钮按下
 					bypass = true
 					_ = setLed(constLedWWW, constLedOff)
 				} else if rst == 12 { // function按钮按下后5秒
-					bypass = true
+					bypass = false
 					_ = setLed(constLedWWW, constLedFlash)
 					_ = SetNetInfo(&dto.NetInfo{DHCP: true})
 					time.Sleep(1 * time.Second)
-				} else {
+				} else if rst == 13 { // function按钮松开
 					bypass = false
+				} else {
 				}
 			}
 

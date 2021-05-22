@@ -44,6 +44,7 @@ func PutNet(c *gin.Context) {
 		})
 		return
 	}
+	services.NotifyLed()
 	c.JSON(http.StatusOK, dto.Resp{
 		Code: http.StatusOK,
 		Data: info,
