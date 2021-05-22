@@ -3,7 +3,7 @@ module github.com/conthing/sysmgmt
 go 1.15
 
 require (
-	github.com/conthing/utils v0.0.0-20200918160522-30e06d830990
+	github.com/conthing/utils v0.0.0-20210522095635-0e3badbef4bc
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.2
 	github.com/grandcat/zeroconf v1.0.0

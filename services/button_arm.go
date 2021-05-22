@@ -23,7 +23,9 @@ const (
 var eventsize = int(unsafe.Sizeof(InputEvent{}))
 
 // 恢复出厂按钮按下时的定时器
-var holdTimer *time.Timer
+var resetButtonHoldTimer *time.Timer
+
+var functionButtonHoldTimer *time.Timer
 
 //input文件中存储的数据结构
 type InputEvent struct {
@@ -71,20 +73,34 @@ func ButtonProcess(event *InputEvent) {
 		common.Log.Debugf("key event: %d code:0x%04x, value:%d", event.Type, event.Code, event.Value)
 		if event.Code == constResetButtonCode {
 			if event.Value == 0 { // 松开
-				if holdTimer != nil {
-					holdTimer.Stop()
-					holdTimer = nil
-					common.Log.Debugf("holdtime canceled")
+				if resetButtonHoldTimer != nil {
+					resetButtonHoldTimer.Stop()
+					resetButtonHoldTimer = nil
+					common.Log.Debugf("reset button holdtime canceled")
 				}
 
-				resetToDefaultEventChannel <- 0
+				buttonEventChannel <- 0
 			} else { // 按下
-				resetToDefaultEventChannel <- 1
-				holdTimer = time.AfterFunc(10*time.Second, func() {
-					resetToDefaultEventChannel <- 2
+				buttonEventChannel <- 1
+				resetButtonHoldTimer = time.AfterFunc(10*time.Second, func() {
+					buttonEventChannel <- 2
+				})
+			}
+		} else if event.Code == constFunctionButtonCode {
+			if event.Value == 0 { // 松开
+				if functionButtonHoldTimer != nil {
+					functionButtonHoldTimer.Stop()
+					functionButtonHoldTimer = nil
+					common.Log.Debugf("function button holdtime canceled")
+				}
+
+				buttonEventChannel <- 10
+			} else { // 按下
+				buttonEventChannel <- 11
+				functionButtonHoldTimer = time.AfterFunc(5*time.Second, func() {
+					buttonEventChannel <- 12
 				})
 			}
 		}
-
 	}
 }

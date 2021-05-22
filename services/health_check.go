@@ -98,15 +98,25 @@ func HealthCheck() error {
 func CtrlLED() {
 	microservice := config.Conf.ControlLed
 	ledStatus := constLedOn
-	for _, wwwurl := range microservice.URLForWWWLed {
-		err := CheckURL(wwwurl)
-		if err != nil {
-			common.Log.Errorf("CheckURL %s failed: %v", wwwurl, err)
-			ledStatus = constLedOff
-		} else {
-			common.Log.Debugf("CheckURL %s pass", wwwurl)
+	if len(microservice.URLForWWWLed) <= 0 { // 如果未定义WWW，则此指示灯用来指示DHCP开关
+		var info dto.NetInfo
+		if err := GetCurrentNetInfo(&info); err == nil {
+			if !info.DHCP {
+				ledStatus = constLedOff
+			}
+		}
+	} else {
+		for _, wwwurl := range microservice.URLForWWWLed {
+			err := CheckURL(wwwurl)
+			if err != nil {
+				common.Log.Errorf("CheckURL %s failed: %v", wwwurl, err)
+				ledStatus = constLedOff
+			} else {
+				common.Log.Debugf("CheckURL %s pass", wwwurl)
+			}
 		}
 	}
+
 	_ = setLed(constLedWWW, ledStatus) // ignore return error
 
 	ledStatus = constLedOn
@@ -130,7 +140,7 @@ func Recovery() {
 		return
 	}
 	str := string(out)
-	if !strings.Contains(str, config.Conf.Recovery.Contains) { //"lpr -d"
+	if !strings.Contains(str, config.Conf.Recovery.Contains) { // todo eroom同时也是目录名，这里判断不出
 		common.Log.Errorf("recovery check: %s is not exist, restart...", config.Conf.Recovery.Contains)
 		go Restart()
 	} else {
@@ -157,35 +167,49 @@ func Restart() {
 	}
 }
 
-var resetToDefaultEventChannel = make(chan int)
+var buttonEventChannel = make(chan int) // 0-恢复出厂按钮松开 1-恢复出厂按钮按下 2-恢复出厂按钮按下后10秒 10-function按钮松开 11-function按钮按下 12-function按钮按下后5秒
 
 // ScheduledHealthCheck 定时轮询任务
 func ScheduledHealthCheck() {
 	go func() {
-		rst := 0
+		bypass := false
 		for {
 
 			select {
 			case <-time.After(time.Second * 30):
-
-			case rst = <-resetToDefaultEventChannel:
-				if rst == 1 { // 恢复出厂按钮按下
+			case rst := <-buttonEventChannel:
+				if rst == 0 { // 恢复出厂按钮松开
+					bypass = false
+				} else if rst == 1 { // 恢复出厂按钮按下
+					bypass = true
 					_ = setLed(constLedStatus, constLedOff)
 					_ = setLed(constLedLink, constLedOff)
 					_ = setLed(constLedWWW, constLedOff)
 				} else if rst == 2 { // 恢复出厂按钮按下后10秒
+					bypass = true
 					_ = setLed(constLedStatus, constLedFlash)
 					_ = setLed(constLedLink, constLedFlash)
 					_ = setLed(constLedWWW, constLedFlash)
+					_ = SetNetInfo(&dto.NetInfo{DHCP: false, Address: "192.168.0.101", Netmask: "255.255.255.0", Gateway: "192.168.0.1"})
 					exec.Command("rm", "-rf", "/app/data").Output() //复位
 					time.Sleep(3 * time.Second)
 					exec.Command("reboot").Output() //复位
-				} else { // 恢复出厂按钮松开
-					rst = 0
+				} else if rst == 10 { // function按钮松开
+					bypass = false
+				} else if rst == 11 { // function按钮按下
+					bypass = true
+					_ = setLed(constLedWWW, constLedOff)
+				} else if rst == 12 { // function按钮按下后5秒
+					bypass = true
+					_ = setLed(constLedWWW, constLedFlash)
+					_ = SetNetInfo(&dto.NetInfo{DHCP: true})
+					time.Sleep(1 * time.Second)
+				} else {
+					bypass = false
 				}
 			}
 
-			if rst == 0 {
+			if !bypass {
 				common.Log.Debug("health check...")
 				CtrlLED()
 				err := HealthCheck()
