@@ -14,14 +14,14 @@ func GetNetInfo(c *gin.Context) {
 	var info dto.NetInfo
 	err := services.GetCurrentNetInfo(&info)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: info,
 	})
@@ -31,21 +31,21 @@ func GetNetInfo(c *gin.Context) {
 func PutNet(c *gin.Context) {
 	var info dto.NetInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
 		return
 	}
 	if err := services.SetNetInfo(&info); err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
 	}
 	services.NotifyLed()
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: info,
 	})

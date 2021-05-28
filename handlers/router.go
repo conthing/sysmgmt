@@ -4,13 +4,19 @@ import (
 	"fmt"
 
 	"github.com/conthing/sysmgmt/auth"
-	"github.com/conthing/sysmgmt/config"
 
 	"github.com/gin-gonic/gin"
 )
 
+// Response 通用HTTP回复body格式，除了ping/version/status等请求可以纯文本回复以外，都必须用此格式，且正常回复的Code必须200
+type Response struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message,omitempty"`
+	Data    interface{} `json:"data,omitempty"`
+}
+
 // Run http service
-func Run(cnf *config.HTTPConfig) {
+func Run(port int) error {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	v1 := r.Group("/api/v1")
@@ -24,7 +30,7 @@ func Run(cnf *config.HTTPConfig) {
 
 	// jwt凭证验证接口
 	authGroup := r.Group("/api/v1")
-	authGroup.Use(auth.GINGuard())
+	authGroup.Use(auth.GINGuardExport())
 	{
 		authGroup.POST("/user/logout", Logout)
 		authGroup.GET("/sn", GetMac)
@@ -49,5 +55,5 @@ func Run(cnf *config.HTTPConfig) {
 		authGroup.GET("/location", GetLocation)
 		authGroup.POST("/location", SetLocation)
 	}
-	r.Run(fmt.Sprintf(":%d", cnf.Port))
+	return r.Run(fmt.Sprintf(":%d", port))
 }

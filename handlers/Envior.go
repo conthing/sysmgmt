@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/conthing/sysmgmt/db"
-	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,14 +13,14 @@ import (
 func GetEnviorList(c *gin.Context) {
 	list, err := db.GetEnviorList()
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: list,
 	})
@@ -32,7 +31,7 @@ func GetEnvior(c *gin.Context) {
 	k := c.Param("name")
 	k = strings.ToUpper(strings.TrimSpace(k))
 	if k == "" {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "Envior name NULL",
 		})
@@ -41,7 +40,7 @@ func GetEnvior(c *gin.Context) {
 
 	v := db.GetEnv(k)
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: map[string]string{k: v},
 	})
@@ -53,7 +52,7 @@ func SetEnvior(c *gin.Context) {
 	done := make(map[string]string)
 	err := c.ShouldBindJSON(&envs)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -64,7 +63,7 @@ func SetEnvior(c *gin.Context) {
 		k = strings.ToUpper(strings.TrimSpace(k))
 		v = strings.TrimSpace(v)
 		if k == "" {
-			c.JSON(http.StatusOK, dto.Resp{
+			c.JSON(http.StatusOK, Response{
 				Code:    http.StatusBadRequest,
 				Message: "Envior name NULL",
 				Data:    done,
@@ -74,7 +73,7 @@ func SetEnvior(c *gin.Context) {
 
 		err = db.SetEnv(k, v)
 		if err != nil {
-			c.JSON(http.StatusOK, dto.Resp{
+			c.JSON(http.StatusOK, Response{
 				Code:    http.StatusInternalServerError,
 				Message: err.Error(),
 				Data:    done,
@@ -84,7 +83,7 @@ func SetEnvior(c *gin.Context) {
 		done[k] = v
 	}
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: done,
 	})
@@ -96,7 +95,7 @@ type aliasBody struct {
 
 // GetAlias 获取名字
 func GetAlias(c *gin.Context) {
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: aliasBody{Alias: strings.TrimSpace(db.GetEnv("ALIAS"))},
 	})
@@ -107,7 +106,7 @@ func SetAlias(c *gin.Context) {
 	var info aliasBody
 	err := c.ShouldBindJSON(&info)
 	if err != nil || info.Alias == "" {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -116,14 +115,14 @@ func SetAlias(c *gin.Context) {
 
 	err = db.SetEnv("ALIAS", strings.TrimSpace(info.Alias))
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: aliasBody{Alias: info.Alias},
 	})
@@ -135,7 +134,7 @@ type locationBody struct {
 
 // GetLocation 获取位置
 func GetLocation(c *gin.Context) {
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: locationBody{Location: strings.TrimSpace(db.GetEnv("LOCATION"))},
 	})
@@ -146,7 +145,7 @@ func SetLocation(c *gin.Context) {
 	var info locationBody
 	err := c.ShouldBindJSON(&info)
 	if err != nil || info.Location == "" {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -155,14 +154,14 @@ func SetLocation(c *gin.Context) {
 
 	err = db.SetEnv("LOCATION", strings.TrimSpace(info.Location))
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: locationBody{Location: info.Location},
 	})

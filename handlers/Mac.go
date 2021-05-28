@@ -14,7 +14,7 @@ func GetMac(c *gin.Context) {
 	var resp dto.MacInfo
 	resp.Mac = common.GetSerialNumber()
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: resp,
 	})

@@ -10,11 +10,47 @@ import (
 	"strings"
 	"time"
 
-	"github.com/conthing/sysmgmt/config"
 	"github.com/conthing/sysmgmt/dto"
 
 	"github.com/conthing/utils/common"
 )
+
+// HealthCheckConfig 配置文件结构
+type HealthCheckConfig struct {
+	ControlLed       StLedControl
+	MicroServiceList []MicroService
+	Recovery         StRecovery
+}
+
+type StRecovery struct {
+	Contains    string
+	Command     string
+	Parameter   []string
+	Environment []string
+	OutputFile  string
+}
+
+// 健康检查有失败的，status灯就闪烁，全部健康则常亮
+// WWW和Link灯，每个灯对应一个URL列表。对每个URL的GET返回均正常，指示灯常亮，任何一个URL返回不正常，指示灯常灭
+// URL的GET返回正常是指：HTTP返回码等于200，且body里不包含以下字符串的任意一个"err, fail, disconnect, timeout"
+
+type StLedControl struct {
+	URLForWWWLed  []string
+	URLForLinkLed []string
+}
+
+// MicroService 微服务配置
+type MicroService struct {
+	Name         string
+	Port         int
+	EnableHealth bool
+}
+
+var healthCheckConfig *HealthCheckConfig
+
+func HealthCheckInit(cfg *HealthCheckConfig) {
+	healthCheckConfig = cfg
+}
 
 func GetAllVersion() (globalVersion dto.VersionInfo) {
 	command := exec.Command("cat", "../VERSION") //初始化Cmd
@@ -31,7 +67,7 @@ func GetAllVersion() (globalVersion dto.VersionInfo) {
 	globalVersion.SubVersion = append(globalVersion.SubVersion, dto.SubVersionInfo{Name: "sysmgmt", Version: common.Version, BuildTime: common.BuildTime})
 
 	var version dto.SubVersionInfo
-	microservicelist := config.Conf.MicroServiceList
+	microservicelist := healthCheckConfig.MicroServiceList
 	for _, microservice := range microservicelist {
 		url := "http://localhost:" + strconv.FormatInt(int64(microservice.Port), 10) + "/api/v1/version"
 		resp, err := http.Get(url)
@@ -67,7 +103,7 @@ func GetAllVersion() (globalVersion dto.VersionInfo) {
 func HealthCheck() error {
 	failservicename := ""
 	successservicename := ""
-	microservicelist := config.Conf.MicroServiceList
+	microservicelist := healthCheckConfig.MicroServiceList
 	for _, microservice := range microservicelist {
 		common.Log.Debugf("%v port :%d", microservice.Name, microservice.Port)
 		if microservice.EnableHealth {
@@ -96,7 +132,7 @@ func HealthCheck() error {
 }
 
 func CtrlLED() {
-	microservice := config.Conf.ControlLed
+	microservice := healthCheckConfig.ControlLed
 	ledStatus := constLedOn
 	if len(microservice.URLForWWWLed) <= 0 { // 如果未定义WWW，则此指示灯用来指示DHCP开关
 		var info dto.NetInfo
@@ -140,21 +176,21 @@ func Recovery() {
 		return
 	}
 	str := string(out)
-	if !strings.Contains(str, config.Conf.Recovery.Contains) { // todo eroom同时也是目录名，这里判断不出
-		common.Log.Errorf("recovery check: %s is not exist, restart...", config.Conf.Recovery.Contains)
+	if !strings.Contains(str, healthCheckConfig.Recovery.Contains) { // todo eroom同时也是目录名，这里判断不出
+		common.Log.Errorf("recovery check: %s is not exist, restart...", healthCheckConfig.Recovery.Contains)
 		go Restart()
 	} else {
-		common.Log.Debugf("recovery check: %s is exist", config.Conf.Recovery.Contains)
+		common.Log.Debugf("recovery check: %s is exist", healthCheckConfig.Recovery.Contains)
 	}
 }
 
 func Restart() {
-	common.Log.Debugf("exec %v para:%v env:%v > %v", config.Conf.Recovery.Command, config.Conf.Recovery.Parameter, config.Conf.Recovery.Environment, config.Conf.Recovery.OutputFile)
-	command := exec.Command(config.Conf.Recovery.Command, config.Conf.Recovery.Parameter...)                    //"/app/zap/lpr/lpr", "-d", "/app/log/lpr", "-c", "/app/zap/lpr"
-	command.Env = append(os.Environ(), config.Conf.Recovery.Environment...)                                     //LD_LIBRARY_PATH=/app/zap/lpr
-	f, err := os.OpenFile(config.Conf.Recovery.OutputFile, os.O_WRONLY|os.O_CREATE|os.O_SYNC|os.O_APPEND, 0755) // "/app/log/conthing-lpr.log"
+	common.Log.Debugf("exec %v para:%v env:%v > %v", healthCheckConfig.Recovery.Command, healthCheckConfig.Recovery.Parameter, healthCheckConfig.Recovery.Environment, healthCheckConfig.Recovery.OutputFile)
+	command := exec.Command(healthCheckConfig.Recovery.Command, healthCheckConfig.Recovery.Parameter...)              //"/app/zap/lpr/lpr", "-d", "/app/log/lpr", "-c", "/app/zap/lpr"
+	command.Env = append(os.Environ(), healthCheckConfig.Recovery.Environment...)                                     //LD_LIBRARY_PATH=/app/zap/lpr
+	f, err := os.OpenFile(healthCheckConfig.Recovery.OutputFile, os.O_WRONLY|os.O_CREATE|os.O_SYNC|os.O_APPEND, 0755) // "/app/log/conthing-lpr.log"
 	if err != nil {
-		common.Log.Errorf("open %s failed: %v", config.Conf.Recovery.OutputFile, err)
+		common.Log.Errorf("open %s failed: %v", healthCheckConfig.Recovery.OutputFile, err)
 	} else {
 		command.Stderr = f
 		command.Stdout = f
@@ -162,7 +198,7 @@ func Restart() {
 
 	err = command.Run()
 	if err != nil {
-		common.Log.Errorf("%s restart failed: %v", config.Conf.Recovery.Contains, err)
+		common.Log.Errorf("%s restart failed: %v", healthCheckConfig.Recovery.Contains, err)
 		return
 	}
 }
@@ -173,61 +209,84 @@ func NotifyLed() {
 	buttonEventChannel <- 0 // 指示灯要变化
 }
 
-// ScheduledHealthCheck 定时轮询任务
-func ScheduledHealthCheck() {
+func RebootLater() {
 	go func() {
-		bypass := false
-		for {
-
-			select {
-			case <-time.After(time.Second * 30):
-			case rst := <-buttonEventChannel:
-				if rst == 0 { // 其他触发led变化的事件
-				} else if rst == 1 { // 恢复出厂按钮按下
-					bypass = true
-					_ = setLed(constLedStatus, constLedOff)
-					_ = setLed(constLedLink, constLedOff)
-					_ = setLed(constLedWWW, constLedOff)
-				} else if rst == 2 { // 恢复出厂按钮按下后10秒
-					bypass = false
-					_ = setLed(constLedStatus, constLedFlash)
-					_ = setLed(constLedLink, constLedFlash)
-					_ = setLed(constLedWWW, constLedFlash)
-					_ = SetNetInfo(&dto.NetInfo{DHCP: false, Address: "192.168.0.101", Netmask: "255.255.255.0", Gateway: "192.168.0.1"})
-					exec.Command("rm", "-rf", "/app/data").Output() //复位
-					time.Sleep(3 * time.Second)
-					exec.Command("reboot").Output() //复位
-				} else if rst == 3 { // 恢复出厂按钮松开
-					bypass = false
-				} else if rst == 11 { // function按钮按下
-					bypass = true
-					_ = setLed(constLedWWW, constLedOff)
-				} else if rst == 12 { // function按钮按下后5秒
-					bypass = false
-					_ = setLed(constLedWWW, constLedFlash)
-					_ = SetNetInfo(&dto.NetInfo{DHCP: true})
-					time.Sleep(1 * time.Second)
-				} else if rst == 13 { // function按钮松开
-					bypass = false
-				} else {
-				}
-			}
-
-			if !bypass {
-				common.Log.Debug("health check...")
-				CtrlLED()
-				err := HealthCheck()
-				if err != nil {
-					_ = setLed(constLedStatus, constLedFlash) // ignore return error
-					//common.Log.Error(err)
-				} else {
-					_ = setLed(constLedStatus, constLedOn) // ignore return error
-				}
-				Recovery()
-			} else {
-				common.Log.Debug("health check bypassed...")
-			}
-
+		time.Sleep(time.Second * 3)
+		_, err := exec.Command("reboot", "-f").Output() //初始化Cmd
+		if err != nil {
+			common.Log.Errorf("reboot failed: %v", err)
 		}
 	}()
+}
+
+// ScheduledHealthCheck 定时轮询任务
+func ScheduledHealthCheck() error {
+	bypass := false
+	for {
+		select {
+		case <-time.After(time.Second * 30):
+		case rst := <-buttonEventChannel:
+			if rst == 0 { // 其他触发led变化的事件
+			} else if rst == 1 { // 恢复出厂按钮按下
+				bypass = true
+				_ = setLed(constLedStatus, constLedOff)
+				_ = setLed(constLedLink, constLedOff)
+				_ = setLed(constLedWWW, constLedOff)
+			} else if rst == 2 { // 恢复出厂按钮按下后10秒
+				bypass = false
+				_ = setLed(constLedStatus, constLedFlash)
+				_ = setLed(constLedLink, constLedFlash)
+				_ = setLed(constLedWWW, constLedFlash)
+				_ = SetNetInfo(&dto.NetInfo{DHCP: false, Address: "192.168.0.101", Netmask: "255.255.255.0", Gateway: "192.168.0.1"})
+				_, _ = exec.Command("rm", "-rf", "/app/data").Output() //复位
+				RebootLater()                                          //复位
+			} else if rst == 3 { // 恢复出厂按钮松开
+				bypass = false
+			} else if rst == 11 { // function按钮按下
+				bypass = true
+				_ = setLed(constLedWWW, constLedOff)
+			} else if rst == 12 { // function按钮按下后5秒
+				bypass = false
+				_ = setLed(constLedWWW, constLedFlash)
+				_ = SetNetInfo(&dto.NetInfo{DHCP: true})
+				time.Sleep(1 * time.Second)
+			} else if rst == 13 { // function按钮松开
+				bypass = false
+			}
+		}
+
+		if !bypass {
+			common.Log.Debug("health check...")
+			CtrlLED()
+			err := HealthCheck()
+			if err != nil {
+				_ = setLed(constLedStatus, constLedFlash) // ignore return error
+				//common.Log.Error(err)
+			} else {
+				_ = setLed(constLedStatus, constLedOn) // ignore return error
+			}
+			Recovery()
+		} else {
+			common.Log.Debug("health check bypassed...")
+		}
+
+	}
+}
+
+// WatchDog 看门狗 todo 这里没有真正的看门狗作用，需要放到healthcheck里面
+func WatchDog() error {
+	wdt, err := GetWatchDog(10) //10s超时
+	if err != nil {
+		return fmt.Errorf("watchdog init failed: %w", err)
+	}
+	for {
+		time.Sleep(time.Second * 4)
+
+		err = KeepAlive(wdt) //10s超时
+		if err != nil {
+			return fmt.Errorf("feed dog failed: %w", err)
+		} else {
+			common.Log.Debug("feed dog ok")
+		}
+	}
 }

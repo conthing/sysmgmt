@@ -1,0 +1,568 @@
+{
+	"info": {
+		"_postman_id": "977c5314-8571-4572-a66e-dffb7de83133",
+		"name": "user",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ready",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/user/ready",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"user",
+						"ready"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ready",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/user/ready",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"user",
+								"ready"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:12:05 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "12"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200\n}"
+				},
+				{
+					"name": "notready",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/user/ready",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"user",
+								"ready"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:16:28 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "54"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 412,\n    \"message\": \"No user in db, need to create\"\n}"
+				}
+			]
+		},
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}"
+				},
+				"url": {
+					"raw": "{{server}}/user/signup",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "signup",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server}}/user/signup",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"user",
+								"signup"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:17:46 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "40"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"message\": \"Sign up success\"\n}"
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}"
+				},
+				"url": {
+					"raw": "{{server}}/user/login",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "login",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server}}/user/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:18:30 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "217"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwidG9rZW5yYW5kb20iOjIyNDc1NjI1OCwiZXhwIjoxNjIyMjc2MzEwLCJpYXQiOjE2MjIxODk5MTB9.YbTYQ4KWyfiXcP9XrcVPHOXwXUopXXa9DIg90STio7E\"\n    }\n}"
+				},
+				{
+					"name": "loginfailed",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"wrong\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server}}/user/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:19:12 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "53"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"message\": \"Invalid username or password\"\n}"
+				}
+			]
+		},
+		{
+			"name": "passwd",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"admin\",\"password\":\"admin\",\"newpassword\":\"admin\"}"
+				},
+				"url": {
+					"raw": "{{server}}/user/passwd",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"user",
+						"passwd"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "passwd",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\",\r\n    \"newpassword\": \"admin1\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server}}/user/passwd",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"user",
+								"passwd"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:21:01 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "217"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwidG9rZW5yYW5kb20iOjk0NTk4NjA2NCwiZXhwIjoxNjIyMjc2NDYxLCJpYXQiOjE2MjIxOTAwNjF9.i2__-BpjpTTbmhyyDouxS44B9KNw0qqeeq3iudK2rqE\"\n    }\n}"
+				},
+				{
+					"name": "passwdfailed",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"wrong\",\r\n    \"newpassword\": \"admin1\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server}}/user/passwd",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"user",
+								"passwd"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:25:49 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "53"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 400,\n    \"message\": \"Invalid username or password\"\n}"
+				}
+			]
+		},
+		{
+			"name": "logout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwidG9rZW5yYW5kb20iOjIyNDc1NjI1OCwiZXhwIjoxNjE4MTQxMzUzLCJpYXQiOjE2MTgxMzc3NTN9.Ei8DLpOCoaYU82ddYJeWCnbdGii1we4fo0Czzqd_u6s"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/user/logout",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"user",
+						"logout"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "logout",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/user/logout",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"user",
+								"logout"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:27:55 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "39"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"message\": \"Logout success\"\n}"
+				}
+			]
+		}
+	]
+}

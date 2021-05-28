@@ -6,15 +6,28 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
-	"github.com/conthing/sysmgmt/config"
 	"github.com/conthing/sysmgmt/db"
 	"github.com/conthing/sysmgmt/handlers"
 	"github.com/conthing/sysmgmt/services"
 
 	"github.com/conthing/utils/common"
 )
+
+// Config 配置文件结构
+type Config struct {
+	services.HealthCheckConfig
+	HTTP          HTTPConfig
+	MainInterface string
+	MDNS          services.MDNSConfig
+	DB            db.DBConfig
+}
+
+type HTTPConfig struct {
+	Port int
+}
+
+var Conf = &Config{}
 
 func boot(_ interface{}) (needRetry bool, err error) {
 	var cfgfile string
@@ -26,27 +39,28 @@ func boot(_ interface{}) (needRetry bool, err error) {
 
 	common.InitLogger(&common.LoggerConfig{Level: "DEBUG", SkipCaller: true})
 
-	err = common.LoadYaml(cfgfile, &config.Conf)
+	err = common.LoadYaml(cfgfile, &Conf)
 	if err != nil {
 		return false, fmt.Errorf("Failed to load config %w", err)
 	}
-	common.Log.Infof("Load config success %+v", config.Conf)
+	common.Log.Infof("Load config success %+v", Conf)
 
-	if config.Conf.MainInterface != "" {
-		err = common.SetMajorInterface(config.Conf.MainInterface)
+	if Conf.MainInterface != "" {
+		err = common.SetMajorInterface(Conf.MainInterface)
 		if err != nil {
 			return false, fmt.Errorf("Failed to set main interface: %w", err)
 		}
-		common.Log.Infof("Set main interface %s success, IP: %s", config.Conf.MainInterface, common.GetMajorInterfaceIP())
+		common.Log.Infof("Set main interface %s success, IP: %s", Conf.MainInterface, common.GetMajorInterfaceIP())
 	}
+
 	// 数据库初始化
-	err = db.Init(&config.Conf.DB)
+	err = db.Init(&Conf.DB)
 	if err != nil {
 		return true, fmt.Errorf("Failed to init database: %w", err)
 	}
 	common.Log.Info("Init database success")
 
-	err = services.StartMDNS(&config.Conf.MDNS)
+	err = services.StartMDNS(&Conf.MDNS)
 	if err != nil {
 		return true, err
 	}
@@ -60,14 +74,13 @@ func main() {
 		return
 	}
 
-	// 1.SIGINT 2.httpserver 3.serial recv
+	services.HealthCheckInit(&Conf.HealthCheckConfig)
+
 	errs := make(chan error, 8)
 
-	// WatchDog()
-
-	services.ScheduledHealthCheck()
-	go handlers.Run(&config.Conf.HTTP)
-
+	//startWatchDog(errs)
+	startHealthCheck(errs)
+	startHTTPServer(errs)
 	listenForEvents(errs)
 	listenForInterrupt(errs)
 
@@ -79,6 +92,15 @@ func main() {
 	services.StopMDNS()
 
 	os.Exit(0)
+}
+
+func startHTTPServer(errChan chan error) {
+	go func() {
+		ret := handlers.Run(Conf.HTTP.Port)
+		if ret != nil {
+			errChan <- ret
+		}
+	}()
 }
 
 func listenForInterrupt(errChan chan error) {
@@ -98,26 +120,20 @@ func listenForEvents(errChan chan error) {
 	}()
 }
 
-// WatchDog 看门狗
-func WatchDog() {
+func startHealthCheck(errChan chan error) {
 	go func() {
-		wdt, err := services.GetWatchDog(10) //10s超时
-		if err == nil {
-			for {
-				select {
-				case <-time.After(time.Second * 4):
-					err = services.KeepAlive(wdt) //10s超时
-					if err != nil {
-						common.Log.Errorf("feed dog failed: %v", err)
-					} else {
-						common.Log.Debug("feed dog ok")
-					}
-				}
+		ret := services.ScheduledHealthCheck()
+		if ret != nil {
+			errChan <- ret
+		}
+	}()
+}
 
-			}
-
-		} else {
-			common.Log.Errorf("watchdog init failed: ", err)
+func startWatchDog(errChan chan error) {
+	go func() {
+		ret := services.WatchDog()
+		if ret != nil {
+			errChan <- ret
 		}
 	}()
 }

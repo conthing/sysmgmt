@@ -7,7 +7,6 @@ import (
 
 	"github.com/conthing/sysmgmt/auth"
 	"github.com/conthing/sysmgmt/db"
-	"github.com/conthing/sysmgmt/dto"
 	"github.com/conthing/sysmgmt/models"
 
 	"github.com/conthing/utils/common"
@@ -40,13 +39,13 @@ func Ready(c *gin.Context) {
 	users, err := db.GetUserList()
 	if err != nil || len(users) == 0 {
 		common.Log.Infof("No user in db, need to create")
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusPreconditionFailed,
 			Message: "No user in db, need to create",
 		})
 		return
 	}
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 	})
 }
@@ -57,7 +56,7 @@ func SignUp(c *gin.Context) {
 	var info LoginRequest
 	err := c.ShouldBindJSON(&info)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "invalid json body",
 		})
@@ -66,7 +65,7 @@ func SignUp(c *gin.Context) {
 
 	err = db.GetUser(&models.User{Username: info.Username})
 	if err == nil || !strings.Contains(err.Error(), "not found") {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "username already in use",
 		})
@@ -76,7 +75,7 @@ func SignUp(c *gin.Context) {
 	// Hash Password
 	bytes, err := bcrypt.GenerateFromPassword([]byte(info.Password), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: "GenerateFromPassword:" + err.Error(),
 		})
@@ -87,7 +86,7 @@ func SignUp(c *gin.Context) {
 	user := models.User{Username: info.Username, Hash: hash, TokenRandom: refreshTokenRandom()}
 	err = db.AddUser(&user)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: "Create models.User failed: " + err.Error(),
 		})
@@ -97,7 +96,7 @@ func SignUp(c *gin.Context) {
 	// 设置参数到middleware中，校验更快
 	auth.SetTokenRandom(user.Username, user.TokenRandom)
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code:    http.StatusOK,
 		Message: "Sign up success",
 	})
@@ -109,7 +108,7 @@ func Login(c *gin.Context) {
 	var info LoginRequest
 	err := c.ShouldBindJSON(&info)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "invalid json body",
 		})
@@ -119,7 +118,7 @@ func Login(c *gin.Context) {
 	user := models.User{Username: info.Username}
 	err = db.GetUser(&user)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "Invalid username or password",
 		})
@@ -128,7 +127,7 @@ func Login(c *gin.Context) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(info.Password))
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "Invalid username or password",
 		})
@@ -138,14 +137,14 @@ func Login(c *gin.Context) {
 	// 签发token
 	token, err := auth.GenerateToken(user.Username, user.TokenRandom)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: LoginResponse{
 			Token: token,
@@ -159,7 +158,7 @@ func Passwd(c *gin.Context) {
 	var info PasswdRequest
 	err := c.ShouldBindJSON(&info)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "invalid json body",
 		})
@@ -169,7 +168,7 @@ func Passwd(c *gin.Context) {
 	user := models.User{Username: info.Username}
 	err = db.GetUser(&user)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "Invalid username or password",
 		})
@@ -178,7 +177,7 @@ func Passwd(c *gin.Context) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(info.Password))
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "Invalid username or password",
 		})
@@ -188,7 +187,7 @@ func Passwd(c *gin.Context) {
 	// Hash Password
 	bytes, err := bcrypt.GenerateFromPassword([]byte(info.NewPassword), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: "GenerateFromPassword:" + err.Error(),
 		})
@@ -200,7 +199,7 @@ func Passwd(c *gin.Context) {
 	user.TokenRandom = refreshTokenRandom()
 	err = db.ModifyUser(&user)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: "ModifyUser failed: " + err.Error(),
 		})
@@ -213,14 +212,14 @@ func Passwd(c *gin.Context) {
 	// 签发token
 	token, err := auth.GenerateToken(user.Username, user.TokenRandom)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: LoginResponse{
 			Token: token,
@@ -237,7 +236,7 @@ func Logout(c *gin.Context) {
 		username, ok = value.(string)
 	}
 	if !ok || username == "" {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: "Invalid token",
 		})
@@ -247,7 +246,7 @@ func Logout(c *gin.Context) {
 	user := models.User{Username: username, TokenRandom: refreshTokenRandom()}
 	err := db.ModifyUser(&user)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: "ModifyUser failed: " + err.Error(),
 		})
@@ -257,7 +256,7 @@ func Logout(c *gin.Context) {
 	// 设置参数到middleware中，校验更快
 	auth.SetTokenRandom(user.Username, user.TokenRandom)
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code:    http.StatusOK,
 		Message: "Logout success",
 	})

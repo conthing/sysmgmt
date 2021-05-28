@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// todo 写入 NTP=FALSE 无效，至少易庐板子如此
+
 // NTPServerURL 地址
 const NTPServerURL = "cn.pool.ntp.org"
 
@@ -36,7 +38,7 @@ func GetTimeInfo(c *gin.Context) {
 	} else {
 		timeInfo.Ntpstatus = false
 	}
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: timeInfo,
 	})
@@ -46,7 +48,7 @@ func GetTimeInfo(c *gin.Context) {
 func PutTime(c *gin.Context) {
 	var info dto.NTPInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -61,7 +63,7 @@ func PutTime(c *gin.Context) {
 	out, err := command.Output()
 	common.Log.Debugf("timedatectl output:%s,err:%v", string(out), err)
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: info,
 	})

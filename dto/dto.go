@@ -46,10 +46,3 @@ type FileInfo struct {
 	Downloading bool   `json:"downloading"`
 	Message     string `json:"message"`
 }
-
-// Resp 回复
-type Resp struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-}

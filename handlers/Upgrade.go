@@ -10,13 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// todo 返回故障码混乱
+// todo 导入导出功能没做
 //Upgrade 升级程序
 func Upgrade(c *gin.Context) {
 	file, err := c.FormFile("file.zip")
 	if err != nil {
 		common.Log.Errorf("Form file failed %v", err)
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -26,8 +26,8 @@ func Upgrade(c *gin.Context) {
 	err = c.SaveUploadedFile(file, "/tmp/file.zip")
 	if err != nil {
 		common.Log.Errorf("Save file failed %v", err)
-		c.JSON(http.StatusOK, dto.Resp{
-			Code:    http.StatusBadRequest,
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
@@ -36,8 +36,8 @@ func Upgrade(c *gin.Context) {
 	err = services.UpdateService()
 	if err != nil {
 		common.Log.Errorf("Update failed %v", err)
-		c.JSON(http.StatusOK, dto.Resp{
-			Code:    http.StatusBadRequest,
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
@@ -46,7 +46,7 @@ func Upgrade(c *gin.Context) {
 	var resp dto.FileInfo
 	resp.Downloading = true
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: resp,
 	})
@@ -58,7 +58,7 @@ func Import(c *gin.Context) {
 	file, err := c.FormFile("data.zip")
 	if err != nil {
 		common.Log.Errorf("Form file failed %v", err)
-		c.JSON(http.StatusOK, dto.Resp{
+		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -68,8 +68,8 @@ func Import(c *gin.Context) {
 	err = c.SaveUploadedFile(file, "/tmp/data.zip")
 	if err != nil {
 		common.Log.Errorf("Save file failed %v", err)
-		c.JSON(http.StatusOK, dto.Resp{
-			Code:    http.StatusBadRequest,
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		return
@@ -78,7 +78,7 @@ func Import(c *gin.Context) {
 	var resp dto.FileInfo
 	resp.Downloading = true
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: resp,
 	})
@@ -96,7 +96,7 @@ func Export(c *gin.Context) {
 	var resp dto.FileInfo
 	resp.Downloading = true
 
-	c.JSON(http.StatusOK, dto.Resp{
+	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
 		Data: ExportInfo{URL: "files/data.zip"},
 	})
