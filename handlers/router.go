@@ -35,25 +35,25 @@ func Run(port int) error {
 		authGroup.POST("/user/logout", Logout)
 		authGroup.GET("/sn", GetMac)
 		authGroup.GET("/version", GetVersion)
-		authGroup.POST("/net", SetNet)
 		authGroup.GET("/net", GetNetInfo)
-		authGroup.POST("/time", SetTime)
+		authGroup.POST("/net", SetNet)
 		authGroup.GET("/time", GetTimeInfo)
+		authGroup.POST("/time", SetTime)
+		authGroup.GET("/envior", GetEnviorList)
+		authGroup.GET("/envior/:name", GetEnvior)
+		authGroup.POST("/envior", SetEnvior)
+
 		authGroup.POST("/reboot", Reboot)
 		authGroup.POST("/upgrade", Upgrade)
 		authGroup.POST("/export", Export)
 		authGroup.POST("/import", Import)
 
-		authGroup.GET("/envior", GetEnviorList)
-		authGroup.GET("/envior/:name", GetEnvior)
-		authGroup.POST("/envior", SetEnvior)
-
 		// 别名设置
-		authGroup.GET("/alias", GetAlias)
-		authGroup.POST("/alias", SetAlias)
+		//authGroup.GET("/alias", GetAlias)
+		//authGroup.POST("/alias", SetAlias)
 		// 地区设置
-		authGroup.GET("/location", GetLocation)
-		authGroup.POST("/location", SetLocation)
+		//authGroup.GET("/location", GetLocation)
+		//authGroup.POST("/location", SetLocation)
 	}
 	return r.Run(fmt.Sprintf(":%d", port))
 }

@@ -44,7 +44,7 @@ func ParseToken(tokenString string) (*userClaims, error) {
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("ParseToken failed: %w", err)
+		return nil, fmt.Errorf("Invalid token: %w", err)
 	}
 
 	claims := token.Claims.(*userClaims)

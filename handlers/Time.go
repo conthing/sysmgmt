@@ -13,6 +13,10 @@ import (
 )
 
 // todo 写入 NTP=FALSE 无效，至少易庐板子如此
+// systemctl start systemd-timesyncd
+// 会出现以下错误， journalctl -f
+// May 28 19:56:37 conthing systemd[23991]: systemd-timesyncd.service: Failed to set up special execution directory in /var/lib: File exists
+// May 28 19:56:37 conthing systemd[23991]: systemd-timesyncd.service: Failed at step STATE_DIRECTORY spawning /lib/systemd/systemd-timesyncd: File exists
 
 // NTPServerURL 地址
 const NTPServerURL = "cn.pool.ntp.org"
@@ -20,7 +24,7 @@ const NTPServerURL = "cn.pool.ntp.org"
 // GetTimeInfo 获取时间信息
 func GetTimeInfo(c *gin.Context) {
 	var timeInfo dto.TimeInfo
-	timeInfo.NtpURL = NTPServerURL
+	timeInfo.NTPServer = NTPServerURL
 	timeInfo.Time = time.Now().Unix()
 	command := exec.Command("/bin/sh", "-c", `timedatectl | grep "NTP enabled"`)
 	out, _ := command.Output()
@@ -34,9 +38,9 @@ func GetTimeInfo(c *gin.Context) {
 	}
 	status := (strings.Split(string(out), ": "))
 	if status[1] == "yes\n" {
-		timeInfo.Ntpstatus = true
+		timeInfo.NTPEnable = true
 	} else {
-		timeInfo.Ntpstatus = false
+		timeInfo.NTPEnable = false
 	}
 	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,
@@ -46,7 +50,7 @@ func GetTimeInfo(c *gin.Context) {
 
 // SetTime 修改时间
 func SetTime(c *gin.Context) {
-	var info dto.NTPInfo
+	var info dto.TimeInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
 		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusBadRequest,
@@ -55,11 +59,15 @@ func SetTime(c *gin.Context) {
 		return
 	}
 
-	if info.URL == "" {
-		info.URL = NTPServerURL //todo 这个服务器地址要存储，供get的时候获取
+	if info.NTPServer == "" {
+		info.NTPServer = NTPServerURL //todo 这个服务器地址要存储，供get的时候获取
 	}
-	time := time.Unix(info.Date, 0)
-	command := exec.Command("ModifyTime.sh", info.Type, time.Format("2006-01-02 15:04:05"), info.URL)
+	ntptype := "ntp"
+	if !info.NTPEnable {
+		ntptype = "nontp"
+	}
+	time := time.Unix(info.Time, 0)
+	command := exec.Command("ModifyTime.sh", ntptype, time.Format("2006-01-02 15:04:05"), info.NTPServer)
 	out, err := command.Output()
 	common.Log.Debugf("timedatectl output:%s,err:%v", string(out), err)
 

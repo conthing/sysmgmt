@@ -13,7 +13,7 @@ import (
 // todo 导入导出功能没做
 //Upgrade 升级程序
 func Upgrade(c *gin.Context) {
-	file, err := c.FormFile("file.zip")
+	file, err := c.FormFile("file")
 	if err != nil {
 		common.Log.Errorf("Form file failed %v", err)
 		c.JSON(http.StatusOK, Response{
@@ -55,7 +55,7 @@ func Upgrade(c *gin.Context) {
 
 //Import 导入设置
 func Import(c *gin.Context) {
-	file, err := c.FormFile("data.zip")
+	file, err := c.FormFile("file")
 	if err != nil {
 		common.Log.Errorf("Form file failed %v", err)
 		c.JSON(http.StatusOK, Response{

@@ -32,7 +32,7 @@ func GINGuard() gin.HandlerFunc {
 		claims, err := ParseToken(tokenString)
 
 		if err != nil {
-			common.Log.Errorf("ParseToken failed: %v", err)
+			common.Log.Error(err)
 			c.JSON(http.StatusOK, Response{
 				Code:    http.StatusUnauthorized,
 				Message: err.Error(),
@@ -81,7 +81,7 @@ func GINGuardExport() gin.HandlerFunc {
 		claims, err := ParseToken(tokenString)
 
 		if err != nil {
-			common.Log.Errorf("ParseToken failed: %v", err)
+			common.Log.Error(err)
 			c.JSON(http.StatusOK, Response{
 				Code:    http.StatusUnauthorized,
 				Message: err.Error(),

@@ -36,9 +36,9 @@ type MacInfo struct {
 
 //TimeInfo 时间信息
 type TimeInfo struct {
-	Time      int64  `json:"time"`
-	Ntpstatus bool   `json:"ntpstatus"`
-	NtpURL    string `json:"ntpurl"`
+	Time      int64  `json:"time,omitempty"`
+	NTPEnable bool   `json:"ntpenable"`
+	NTPServer string `json:"ntpserver,omitempty"`
 }
 
 // FileInfo 文件信息
