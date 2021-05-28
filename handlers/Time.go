@@ -44,8 +44,8 @@ func GetTimeInfo(c *gin.Context) {
 	})
 }
 
-// PutTime 修改时间
-func PutTime(c *gin.Context) {
+// SetTime 修改时间
+func SetTime(c *gin.Context) {
 	var info dto.NTPInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
 		c.JSON(http.StatusOK, Response{

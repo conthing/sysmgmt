@@ -3,9 +3,9 @@ package dto
 // NetInfo 设置网络的结构体
 type NetInfo struct {
 	DHCP    bool   `json:"dhcp" `
-	Address string `json:"address" `
-	Netmask string `json:"netmask" `
-	Gateway string `json:"gateway" `
+	Address string `json:"address,omitempty" `
+	Netmask string `json:"netmask,omitempty" `
+	Gateway string `json:"gateway,omitempty" `
 }
 
 // NTPInfo 设置时区的结构体

@@ -46,10 +46,12 @@ type MicroService struct {
 	EnableHealth bool
 }
 
-var healthCheckConfig *HealthCheckConfig
+var healthCheckConfig HealthCheckConfig
 
-func HealthCheckInit(cfg *HealthCheckConfig) {
-	healthCheckConfig = cfg
+func HealthCheckInit(ControlLed StLedControl, MicroServiceList []MicroService, Recovery StRecovery) {
+	healthCheckConfig.ControlLed = ControlLed
+	healthCheckConfig.MicroServiceList = MicroServiceList
+	healthCheckConfig.Recovery = Recovery
 }
 
 func GetAllVersion() (globalVersion dto.VersionInfo) {

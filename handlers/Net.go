@@ -27,8 +27,8 @@ func GetNetInfo(c *gin.Context) {
 	})
 }
 
-// PutNet 修改IP
-func PutNet(c *gin.Context) {
+// SetNet 修改IP
+func SetNet(c *gin.Context) {
 	var info dto.NetInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
 		c.JSON(http.StatusOK, Response{

@@ -16,18 +16,20 @@ import (
 
 // Config 配置文件结构
 type Config struct {
-	services.HealthCheckConfig
-	HTTP          HTTPConfig
-	MainInterface string
-	MDNS          services.MDNSConfig
-	DB            db.DBConfig
+	ControlLed       services.StLedControl
+	MicroServiceList []services.MicroService
+	Recovery         services.StRecovery
+	HTTP             HTTPConfig
+	MainInterface    string
+	MDNS             services.MDNSConfig
+	DB               db.DBConfig
 }
 
 type HTTPConfig struct {
 	Port int
 }
 
-var Conf = &Config{}
+var config = &Config{}
 
 func boot(_ interface{}) (needRetry bool, err error) {
 	var cfgfile string
@@ -39,28 +41,28 @@ func boot(_ interface{}) (needRetry bool, err error) {
 
 	common.InitLogger(&common.LoggerConfig{Level: "DEBUG", SkipCaller: true})
 
-	err = common.LoadYaml(cfgfile, &Conf)
+	err = common.LoadYaml(cfgfile, &config)
 	if err != nil {
 		return false, fmt.Errorf("Failed to load config %w", err)
 	}
-	common.Log.Infof("Load config success %+v", Conf)
+	common.Log.Infof("Load config success %+v", config)
 
-	if Conf.MainInterface != "" {
-		err = common.SetMajorInterface(Conf.MainInterface)
+	if config.MainInterface != "" {
+		err = common.SetMajorInterface(config.MainInterface)
 		if err != nil {
 			return false, fmt.Errorf("Failed to set main interface: %w", err)
 		}
-		common.Log.Infof("Set main interface %s success, IP: %s", Conf.MainInterface, common.GetMajorInterfaceIP())
+		common.Log.Infof("Set main interface %s success, IP: %s", config.MainInterface, common.GetMajorInterfaceIP())
 	}
 
 	// 数据库初始化
-	err = db.Init(&Conf.DB)
+	err = db.Init(&config.DB)
 	if err != nil {
 		return true, fmt.Errorf("Failed to init database: %w", err)
 	}
 	common.Log.Info("Init database success")
 
-	err = services.StartMDNS(&Conf.MDNS)
+	err = services.StartMDNS(&config.MDNS)
 	if err != nil {
 		return true, err
 	}
@@ -74,7 +76,7 @@ func main() {
 		return
 	}
 
-	services.HealthCheckInit(&Conf.HealthCheckConfig)
+	services.HealthCheckInit(config.ControlLed, config.MicroServiceList, config.Recovery)
 
 	errs := make(chan error, 8)
 
@@ -96,7 +98,7 @@ func main() {
 
 func startHTTPServer(errChan chan error) {
 	go func() {
-		ret := handlers.Run(Conf.HTTP.Port)
+		ret := handlers.Run(config.HTTP.Port)
 		if ret != nil {
 			errChan <- ret
 		}
