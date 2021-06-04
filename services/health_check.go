@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -178,11 +179,15 @@ func Recovery() {
 		return
 	}
 	str := string(out)
-	if !strings.Contains(str, healthCheckConfig.Recovery.Contains) { // todo eroom同时也是目录名，这里判断不出
-		common.Log.Errorf("recovery check: %s is not exist, restart...", healthCheckConfig.Recovery.Contains)
-		go Restart()
+	if match, err := regexp.MatchString(healthCheckConfig.Recovery.Contains, str); err == nil {
+		if !match {
+			common.Log.Errorf("recovery check: %q is not exist, restart...", healthCheckConfig.Recovery.Contains)
+			go Restart()
+		} else {
+			common.Log.Debugf("recovery check: %q is exist", healthCheckConfig.Recovery.Contains)
+		}
 	} else {
-		common.Log.Debugf("recovery check: %s is exist", healthCheckConfig.Recovery.Contains)
+		common.Log.Errorf("regexp MatchString %q failed: %v", healthCheckConfig.Recovery.Contains, err)
 	}
 }
 
@@ -205,10 +210,17 @@ func Restart() {
 	}
 }
 
-var buttonEventChannel = make(chan int) // 0-其他触发led变化的事件 3-恢复出厂按钮松开 1-恢复出厂按钮按下 2-恢复出厂按钮按下后10秒 13-function按钮松开 11-function按钮按下 12-function按钮按下后5秒
+// 0-其他触发led变化的事件
+// 1-恢复出厂按钮按下 2-恢复出厂按钮按下后10秒 3-恢复出厂按钮松开
+// 11-function按钮按下 12-function按钮按下后5秒 13-function按钮松开
+// 23-identify
+var buttonEventChannel = make(chan int)
 
 func NotifyLed() {
 	buttonEventChannel <- 0 // 指示灯要变化
+}
+func IdentifyLed() {
+	buttonEventChannel <- 23 // 指示灯要变化
 }
 
 func RebootLater() {
@@ -235,7 +247,7 @@ func ScheduledHealthCheck() error {
 				_ = setLed(constLedLink, constLedOff)
 				_ = setLed(constLedWWW, constLedOff)
 			} else if rst == 2 { // 恢复出厂按钮按下后10秒
-				bypass = false
+				bypass = true
 				_ = setLed(constLedStatus, constLedFlash)
 				_ = setLed(constLedLink, constLedFlash)
 				_ = setLed(constLedWWW, constLedFlash)
@@ -254,6 +266,12 @@ func ScheduledHealthCheck() error {
 				time.Sleep(1 * time.Second)
 			} else if rst == 13 { // function按钮松开
 				bypass = false
+			} else if rst == 23 { // identify事件
+				bypass = false
+				_ = setLed(constLedStatus, constLedFlash)
+				_ = setLed(constLedLink, constLedFlash)
+				_ = setLed(constLedWWW, constLedFlash)
+				continue
 			}
 		}
 

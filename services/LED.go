@@ -19,7 +19,7 @@ const (
 	constLedFlash   byte   = byte(2)
 )
 
-// todo 网关identify，整机组装支持
+// todo 整机组装支持
 // 原型恢复后，达到这样的效果：如果调用方式是setLed(constLedStatus,constLedFlash)，函数里就会执行/usr/test/led-pwm-start /dev/led-pwm1 ...
 // 所以setLed的函数体里面，是根据入参“选择”exec不通的内容，并判断返回是否正常
 // setLed 设置led的开关闪状态

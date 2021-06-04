@@ -1,0 +1,1565 @@
+{
+	"info": {
+		"_postman_id": "4f2c121d-b294-4c3b-96bc-1907849bb66a",
+		"name": "sysmgmt",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/sysmgmt/ping",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"ping"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ping",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/sysmgmt/ping",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"ping"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:10:49 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "pong"
+				}
+			]
+		},
+		{
+			"name": "sn",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/sysmgmt/sn",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"sn"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "sn",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/sn",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"sn"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:42:25 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "42"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"mac\": \"dc07c105708a\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "version",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/sysmgmt/version",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"version"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "version",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/version",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"version"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:58:32 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "808"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"version\": \"1.0.1\",\n        \"description\": \"修订记录\\n2021-03-02\\n支持扩展总线\\n支持恢复出厂\\n支持涂鸦群组\\n支持总线防冲突\\n支持调光亮度的保存\\n前端更新\\nauth改到sysmgmt\\nhomekit进程不保存设备状态\\n支持sonos\\n\\n2020-10-31\\n修改四路继电器协议bug\\n解决手动拉窗帘导致的苹果app上“正在开启”“正在关闭”的问题\\n解决涂鸦APP命令的reliable重传导致多次进入回调的问题\\nadvanced-bridge带参数\\nhomekit信息通过配置文件\\n调光时间改成5秒\\n增加版本和网络状态的支持\\n\\n2020-9-29\\n第一版功能发布\",\n        \"subversion\": [\n            {\n                \"name\": \"sysmgmt\",\n                \"version\": \"2.0.0\",\n                \"buildtime\": \"2021-05-28 16:57:23 CST\"\n            },\n            {\n                \"name\": \"eroom-core\",\n                \"version\": \"0.2.1 \",\n                \"buildtime\": \"2021-05-26 14:56:10 CST\"\n            }\n        ]\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "net",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/sysmgmt/net",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"net"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "netstatic",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/net",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"net"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:59:40 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "110"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"dhcp\": false,\n        \"address\": \"192.168.0.101\",\n        \"netmask\": \"255.255.255.0\",\n        \"gateway\": \"192.168.0.1\"\n    }\n}"
+				},
+				{
+					"name": "netdhcp",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/net",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"net"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 09:26:09 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "33"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"dhcp\": true\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "net",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dhcp\": false,\r\n    \"address\": \"192.168.0.101\",\r\n    \"netmask\": \"255.255.255.0\",\r\n    \"gateway\": \"192.168.0.1\"\r\n}"
+				},
+				"url": {
+					"raw": "{{server}}/sysmgmt/net",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"net"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "netdhcp",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dhcp\": true\r\n}"
+						},
+						"url": {
+							"raw": "{{server}}/sysmgmt/net",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"net"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 09:25:22 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "33"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"dhcp\": true\n    }\n}"
+				},
+				{
+					"name": "netstatic",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dhcp\": false,\r\n    \"address\": \"192.168.0.101\",\r\n    \"netmask\": \"255.255.255.0\",\r\n    \"gateway\": \"192.168.0.1\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server}}/sysmgmt/net",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"net"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 09:30:53 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "110"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"dhcp\": false,\n        \"address\": \"192.168.0.101\",\n        \"netmask\": \"255.255.255.0\",\n        \"gateway\": \"192.168.0.1\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "time",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/sysmgmt/time",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"time"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "time",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/time",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"time"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 12:45:06 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "86"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"time\": 1622205906,\n        \"ntpenable\": true,\n        \"ntpserver\": \"cn.pool.ntp.org\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "time",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"time\": 1622205906,\r\n    \"ntpenable\": false\r\n}"
+				},
+				"url": {
+					"raw": "{{server}}/sysmgmt/time",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"time"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "timentpenable",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ntpenable\": true,\r\n    \"ntpserver\": \"cn.pool.ntp.org\"\r\n}"
+						},
+						"url": {
+							"raw": "{{server}}/sysmgmt/time",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"time"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 12:47:14 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "68"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"ntpenable\": true,\n        \"ntpserver\": \"cn.pool.ntp.org\"\n    }\n}"
+				},
+				{
+					"name": "timentpdisable",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"time\": 1622205906,\r\n    \"ntpenable\": false\r\n}"
+						},
+						"url": {
+							"raw": "{{server}}/sysmgmt/time",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"time"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 12:48:13 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "87"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"time\": 1622205906,\n        \"ntpenable\": false,\n        \"ntpserver\": \"cn.pool.ntp.org\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "enviors",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/sysmgmt/envior",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"envior"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "enviorsempty",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/envior",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"envior"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 08:24:21 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "22"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": []\n}"
+				},
+				{
+					"name": "enviors",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/envior",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"envior"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 12:53:12 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "100"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": [\n        {\n            \"Name\": \"ALIAS\",\n            \"Value\": \"test device\"\n        },\n        {\n            \"Name\": \"LOCATION\",\n            \"Value\": \"Hang Zhou\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "location",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/sysmgmt/envior/location",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"envior",
+						"location"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "location",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/envior/location",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"envior",
+								"location"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 12:54:46 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "44"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"LOCATION\": \"Hang Zhou\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "alias",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/sysmgmt/envior/alias",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"envior",
+						"alias"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "alias",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/envior/alias",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"envior",
+								"alias"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 12:55:48 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "43"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"ALIAS\": \"test device\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "envior",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"location\":\"杭州\"}"
+				},
+				"url": {
+					"raw": "{{server}}/sysmgmt/envior",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"envior"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "alias",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"alias\":\"Test device\"}"
+						},
+						"url": {
+							"raw": "{{server}}/sysmgmt/envior",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"envior"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 12:57:13 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "43"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"ALIAS\": \"Test device\"\n    }\n}"
+				},
+				{
+					"name": "location",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"location\":\"杭州\"}"
+						},
+						"url": {
+							"raw": "{{server}}/sysmgmt/envior",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"envior"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 12:57:38 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "41"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"LOCATION\": \"杭州\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "reboot",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/sysmgmt/reboot",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"reboot"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "reboot",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/reboot",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"reboot"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 12:59:25 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "42"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": \"reboot in 3 seconds.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "export",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/sysmgmt/export",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"export"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "export",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/sysmgmt/export",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"export"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 13:05:05 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "44"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"url\": \"files/data.zip\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "import",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/D:/git/conthing/sysmgmt/output/armlinux/file.zip"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{server}}/sysmgmt/import",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"import"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "import",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/D:/git/conthing/sysmgmt/output/armlinux/file.zip"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/sysmgmt/import",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"sysmgmt",
+								"import"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.2"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 May 2021 13:23:59 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "53"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"code\": 200,\n    \"data\": {\n        \"downloading\": true,\n        \"message\": \"\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "upgrade",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/D:/git/conthing/sysmgmt/output/armlinux/file.zip"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{server}}/sysmgmt/upgrade",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"sysmgmt",
+						"upgrade"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

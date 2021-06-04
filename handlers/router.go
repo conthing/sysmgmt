@@ -22,6 +22,7 @@ func Run(port int) error {
 	v1 := r.Group("/api/v1")
 	{
 		v1.GET("/ping", Ping)
+		v1.POST("/identify", Identify)
 		v1.GET("/user/ready", Ready)
 		v1.POST("/user/signup", SignUp)
 		v1.POST("/user/login", Login)

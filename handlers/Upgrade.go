@@ -93,8 +93,14 @@ type ExportInfo struct {
 //Export 导出设置
 func Export(c *gin.Context) {
 
-	var resp dto.FileInfo
-	resp.Downloading = true
+	if err := services.ZipData(); err != nil {
+		common.Log.Errorf("Zip data failed %v", err)
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,

@@ -1,8 +1,8 @@
 controlled:
   urlforwwwled: 
-    - "http://localhost:52018/api/v1/status"
+    - "http://localhost:52018/api/v1/www"
   urlforlinkled: 
-    - "http://localhost:52032/api/v1/status"
+    - "http://localhost:52032/api/v1/link"
 http:
   port: 52035
 mdns:

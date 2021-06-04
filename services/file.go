@@ -186,3 +186,35 @@ func exists(path string) bool {
 	}
 	return true
 }
+
+// 压缩导出数据
+func ZipData() error {
+	out, err := exec.Command("zip", "-r", "/app/log/files/data.zip", "/app/data/").Output()
+	common.Log.Debug(string(out))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// 加载导入数据
+func ApplyData() error {
+	out, err := exec.Command("bash", "-c", "cd /tmp/ && unzip /tmp/data.zip").Output()
+	common.Log.Debug(string(out))
+	if err != nil {
+		return err
+	}
+
+	out, err = exec.Command("mv", "/app/data", "/app/data0").Output()
+	common.Log.Debug(string(out))
+	if err != nil {
+		return err
+	}
+
+	out, err = exec.Command("mv", "/tmp/data", "/app/data").Output()
+	common.Log.Debug(string(out))
+	if err != nil {
+		return err
+	}
+	return nil
+}
