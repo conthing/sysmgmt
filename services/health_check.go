@@ -283,7 +283,7 @@ func ScheduledHealthCheck() error {
 				_ = setLed(constLedStatus, constLedFlash) // ignore return error
 				//common.Log.Error(err)
 			} else {
-				_ = setLed(constLedStatus, constLedOn) // ignore return error
+				_ = setLed(constLedStatus, constLedBlink) // ignore return error
 			}
 			Recovery()
 		} else {

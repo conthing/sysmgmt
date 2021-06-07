@@ -16,7 +16,8 @@ const (
 	constLedLink    string = "/dev/led-pwm3"
 	constLedOff     byte   = byte(0)
 	constLedOn      byte   = byte(1)
-	constLedFlash   byte   = byte(2)
+	constLedFlash   byte   = byte(2) // 每秒闪烁5次，50%占空比
+	constLedBlink   byte   = byte(3) // 每2秒亮0.1秒
 )
 
 // todo 整机组装支持
@@ -31,6 +32,8 @@ func setLed(led string, status byte) error {
 		cmd = exec.Command(constLedCommand, "1", led, "200000000", "199999999")
 	} else if status == constLedFlash {
 		cmd = exec.Command(constLedCommand, "1", led, "200000000", "100000000")
+	} else if status == constLedBlink {
+		cmd = exec.Command(constLedCommand, "1", led, "2000000000", "100000000")
 	}
 
 	if cmd == nil {
