@@ -40,6 +40,7 @@ func boot(_ interface{}) (needRetry bool, err error) {
 	flag.Parse()
 
 	common.InitLogger(&common.LoggerConfig{Level: "DEBUG", SkipCaller: true})
+	common.Log.Infof("VERSION %s build at %s", common.Version, common.BuildTime)
 
 	err = common.LoadYaml(cfgfile, &config)
 	if err != nil {

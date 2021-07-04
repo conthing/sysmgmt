@@ -225,6 +225,7 @@ func IdentifyLed() {
 
 func RebootLater() {
 	go func() {
+		common.Log.Debugf("reboot in 3 seconds")
 		time.Sleep(time.Second * 3)
 		_, err := exec.Command("reboot", "-f").Output() //初始化Cmd
 		if err != nil {

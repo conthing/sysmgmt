@@ -13,6 +13,8 @@ import (
 // todo 导入导出功能没做
 //Upgrade 升级程序
 func Upgrade(c *gin.Context) {
+	common.Log.Debugf("Upgrade start...")
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		common.Log.Errorf("Form file failed %v", err)
@@ -23,6 +25,9 @@ func Upgrade(c *gin.Context) {
 		return
 	}
 
+	services.Clean()
+	common.Log.Debugf("formed file.zip")
+
 	err = c.SaveUploadedFile(file, "/tmp/file.zip")
 	if err != nil {
 		common.Log.Errorf("Save file failed %v", err)
@@ -32,6 +37,8 @@ func Upgrade(c *gin.Context) {
 		})
 		return
 	}
+
+	common.Log.Debugf("saved to file.zip")
 
 	err = services.UpdateService()
 	if err != nil {
@@ -55,6 +62,8 @@ func Upgrade(c *gin.Context) {
 
 //Import 导入设置
 func Import(c *gin.Context) {
+	common.Log.Debugf("Import start...")
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		common.Log.Errorf("Form file failed %v", err)
@@ -65,9 +74,24 @@ func Import(c *gin.Context) {
 		return
 	}
 
-	err = c.SaveUploadedFile(file, "/tmp/data.zip")
+	services.Clean()
+	common.Log.Debugf("formed file.zip")
+
+	err = c.SaveUploadedFile(file, "/tmp/file.zip")
 	if err != nil {
 		common.Log.Errorf("Save file failed %v", err)
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	common.Log.Debugf("saved to file.zip")
+
+	err = services.ImportService()
+	if err != nil {
+		common.Log.Errorf("Import failed %v", err)
 		c.JSON(http.StatusOK, Response{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
