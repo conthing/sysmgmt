@@ -168,7 +168,13 @@ func Install(c *ItemCollection) error {
 		//} else {
 		//	common.Log.Debugf("deleted item: %q", item.Dst)
 		//}
-		err := os.Rename(item.Src, item.Dst)
+
+		s, err := os.Stat(item.Dst)
+		if err == nil && s.IsDir() {
+			os.RemoveAll(item.Dst)
+		}
+
+		err = os.Rename(item.Src, item.Dst)
 		if err != nil {
 			common.Log.Errorf("modify item %q failed: %v", item.Dst, err)
 			return fmt.Errorf("modify item %q failed: %w", item.Dst, err)

@@ -94,7 +94,7 @@ func SignUp(c *gin.Context) {
 	}
 
 	// 设置参数到middleware中，校验更快
-	auth.SetTokenRandom(user.Username, user.TokenRandom)
+	//auth.SetTokenRandom(user.Username, user.TokenRandom)
 
 	c.JSON(http.StatusOK, Response{
 		Code:    http.StatusOK,
@@ -207,7 +207,7 @@ func Passwd(c *gin.Context) {
 	}
 
 	// 设置参数到middleware中，校验更快
-	auth.SetTokenRandom(user.Username, user.TokenRandom)
+	//auth.SetTokenRandom(user.Username, user.TokenRandom)
 
 	// 签发token
 	token, err := auth.GenerateToken(user.Username, user.TokenRandom)
@@ -254,7 +254,7 @@ func Logout(c *gin.Context) {
 	}
 
 	// 设置参数到middleware中，校验更快
-	auth.SetTokenRandom(user.Username, user.TokenRandom)
+	//auth.SetTokenRandom(user.Username, user.TokenRandom)
 
 	c.JSON(http.StatusOK, Response{
 		Code:    http.StatusOK,

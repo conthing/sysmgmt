@@ -1,31 +1,25 @@
 controlled:
   urlforwwwled: 
-    - "http://localhost:52018/api/v1/www"
+    - "http://localhost:52032/api/v1/www"
   urlforlinkled: 
     - "http://localhost:52032/api/v1/link"
 http:
   port: 52035
 mdns:
   enable: true
-  name: conthing-lpr
-  port: 42424
+  name: lpr
+  port: 80
 microservicelist:
   - name: lpr
     port: 52032
     enablehealth: true
-  - name: exportmqtt
-    port: 52018
-    enablehealth: true
 recovery:
-  contains: "lpr"
-  command: "/app/zap/lpr/lpr"
+  contains: "(.*)lpr"
+  command: "bash"
   parameter:
     - "-c"
-    - "/app/zap/lpr/config.yaml"
-  environment:
-    - "LD_LIBRARY_PATH=/app/zap/lpr"
-  outputfile: "/app/log/conthing-lpr.log"
+    - "/app/scripts/appstart.sh"
 db:
   location: "/app/data/"
-  dbname: "sysmgmt"
-   
+  dbname: "lpr"
+
