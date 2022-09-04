@@ -48,6 +48,7 @@ func Run(port int) error {
 		authGroup.POST("/upgrade", Upgrade)
 		authGroup.POST("/export", Export)
 		authGroup.POST("/import", Import)
+		authGroup.POST("/urlupgrade", UrlUpgrade)
 
 		// 别名设置
 		//authGroup.GET("/alias", GetAlias)

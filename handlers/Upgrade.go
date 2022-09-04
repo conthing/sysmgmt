@@ -1,7 +1,11 @@
 package handlers
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"io"
 	"net/http"
+	"os"
 
 	"github.com/conthing/sysmgmt/dto"
 	"github.com/conthing/sysmgmt/services"
@@ -52,6 +56,105 @@ func Upgrade(c *gin.Context) {
 
 	var resp dto.FileInfo
 	resp.Downloading = true
+
+	c.JSON(http.StatusOK, Response{
+		Code: http.StatusOK,
+		Data: resp,
+	})
+
+}
+
+func hashSHA256File(filePath string) (string, error) {
+	var hashValue string
+	file, err := os.Open(filePath)
+	if err != nil {
+		return hashValue, err
+	}
+	defer file.Close()
+	hash := sha256.New()
+	if _, err := io.Copy(hash, file); err != nil {
+		return hashValue, err
+	}
+	hashInBytes := hash.Sum(nil)
+	hashValue = hex.EncodeToString(hashInBytes)
+	return hashValue, nil
+}
+
+func UrlUpgrade(c *gin.Context) {
+	var info dto.UrlUpgradeInfo
+	if err := c.ShouldBindJSON(&info); err != nil {
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+	common.Log.Debugf("GET from %s", info.URL)
+
+	// Get the data
+	resp, err := http.Get(info.URL)
+	if err != nil {
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+	defer resp.Body.Close()
+
+	services.Clean()
+
+	// 创建一个文件用于保存
+	out, err := os.Create("/tmp/file.zip")
+	if err != nil {
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+	defer out.Close()
+
+	// 然后将响应流和文件流对接起来
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	common.Log.Debugf("saved to file.zip")
+
+	sha256, err := hashSHA256File("/tmp/file.zip")
+	if err != nil {
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	if sha256 != info.SHA256 {
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusBadRequest,
+			Message: "SHA256 failed",
+		})
+		return
+	}
+
+	common.Log.Debugf("SHA256 success")
+
+	err = services.UpdateService()
+	if err != nil {
+		common.Log.Errorf("Update failed %v", err)
+		c.JSON(http.StatusOK, Response{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, Response{
 		Code: http.StatusOK,

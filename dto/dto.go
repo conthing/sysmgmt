@@ -46,3 +46,9 @@ type FileInfo struct {
 	Downloading bool   `json:"downloading"`
 	Message     string `json:"message"`
 }
+
+// UrlUpgradeInfo 从URL升级
+type UrlUpgradeInfo struct {
+	URL    string `json:"upgrade_url"`
+	SHA256 string `json:"sha256"`
+}
